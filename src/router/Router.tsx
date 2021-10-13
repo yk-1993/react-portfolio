@@ -5,6 +5,7 @@ import { HomeRoutes } from "./HomeRoutes";
 import { Page404 } from "../components/pages/Page404";
 import { HeaderLayout } from "../components/templates/HeaderLayout";
 import { RecoilRoot, useRecoilState } from "recoil";
+import { SignUp } from "../components/pages/SignUp";
 
 export const Router: VFC = memo(() => {
   return (
@@ -12,6 +13,9 @@ export const Router: VFC = memo(() => {
       <RecoilRoot>
         <Route exact path="/">
           <Login />
+        </Route>
+        <Route path="/signup">
+          <SignUp />
         </Route>
         <Route
           path="/home"
