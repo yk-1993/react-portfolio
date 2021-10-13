@@ -8,34 +8,33 @@ import { useDisclosure } from "@chakra-ui/react";
 import { UserDetailModal } from "../organism/user/userDetailModal";
 import { useSelectUser } from "../../hooks/useSelectUser";
 import { useRecoilValue } from "recoil";
-import { UserInfo } from "../../providers/LoginUserProvider";
 
 export const UserManegement: VFC = memo(() => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { getUsers, users, loading } = useAllUsers();
-  const { onSelectUser, selectUser } = useSelectUser();
-  const userInformation = useRecoilValue(UserInfo);
+  //   const { isOpen, onOpen, onClose } = useDisclosure();
+  //   const { getUsers, users, loading } = useAllUsers();
+  //   // const { onSelectUser, selectUser } = useSelectUser();
+  //   const userInformation = useRecoilValue(UserInfo);
 
-  useEffect(() => getUsers(), []);
-  const onClickUser = useCallback(
-    (id: number) => {
-      onSelectUser({ id, users, onOpen });
-    },
-    [users, onSelectUser, onOpen]
-  );
-  useEffect(() => {
-    console.log(userInformation);
-  }, []);
+  //   useEffect(() => getUsers(), []);
+  //   const onClickUser = useCallback(
+  //     (id: number) => {
+  //       onSelectUser({ id, users, onOpen });
+  //     },
+  //     [users, onSelectUser, onOpen]
+  //   );
+  //   useEffect(() => {
+  //     console.log(userInformation);
+  //   }, []);
 
   return (
     <>
-      {loading ? (
+      {/* {loading ? (
         <Center height="100vh">
           <Spinner color="teal" />
         </Center>
       ) : (
         <Wrap spacing="30px" p={{ base: 4, md: 10 }} justify="space-around">
-          {users.map((user) => (
+          { {users.map((user) => (
             <WrapItem key={user.id} mx="auto">
               <UserCard
                 id={user.id}
@@ -45,14 +44,14 @@ export const UserManegement: VFC = memo(() => {
                 onClick={onClickUser}
               ></UserCard>
             </WrapItem>
-          ))}
+          ))} }
         </Wrap>
-      )}
-      <UserDetailModal
-        isOpen={isOpen}
-        onClose={onClose}
-        user={selectUser}
-      ></UserDetailModal>
+       )}
+       <UserDetailModal
+         isOpen={isOpen}
+         onClose={onClose}
+         user={selectUser}
+       ></UserDetailModal> */}
     </>
   );
 });

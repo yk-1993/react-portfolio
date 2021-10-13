@@ -11,12 +11,12 @@ type Props = {
 export const useSelectUser = () => {
   const [selectUser, setSelectedUser] = useState<User | null>(null);
 
-  const onSelectUser = useCallback((props: Props) => {
-    const { id, users, onOpen } = props;
-    const targetUser = users.find((user) => user.id === id);
-    // tagertUserがnullまたはundefinedの場合、nullを設定
-    setSelectedUser(targetUser ?? null);
-    onOpen();
-  }, []);
-  return { onSelectUser, selectUser };
+  // const onSelectUser = useCallback((props: Props) => {
+  //   const { id, users, onOpen } = props;
+  //   const targetUser = users.find((user) => user.id === id);
+  //   // tagertUserがnullまたはundefinedの場合、nullを設定
+  //   setSelectedUser(targetUser ?? null);
+  //   onOpen();
+  // }, []);
+  // return { onSelectUser, selectUser };
 };

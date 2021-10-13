@@ -1,9 +1,11 @@
 import { atom } from "recoil";
-import { User } from "../types/user";
+import firebase from "firebase";
 
-export type loginUser = User & { isAdmin: boolean };
+type AuthState = firebase.User | null;
 
-export const UserInfo = atom<loginUser | null>({
-  key: "userInfo",
+export const authState = atom<AuthState>({
+  key: "authState",
   default: null,
+  // TypeError: Cannot freezeを回避
+  dangerouslyAllowMutability: true,
 });

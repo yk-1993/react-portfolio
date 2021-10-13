@@ -34,7 +34,7 @@ export const UserDetailModal: VFC<Props> = memo((props) => {
           <ModalBody mx={4}>
             <Stack spacing={4}>
               <FormControl>
-                <FormLabel>名前</FormLabel>
+                {/* <FormLabel>名前</FormLabel>
                 <Input value={user?.username} isReadOnly />
               </FormControl>
               <FormControl>
@@ -47,7 +47,7 @@ export const UserDetailModal: VFC<Props> = memo((props) => {
               </FormControl>
               <FormControl>
                 <FormLabel>TEL</FormLabel>
-                <Input value={user?.phone} isReadOnly />
+                <Input value={user?.phone} isReadOnly /> */}
               </FormControl>
             </Stack>
           </ModalBody>

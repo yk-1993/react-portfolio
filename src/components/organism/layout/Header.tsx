@@ -2,8 +2,12 @@ import { Box, Flex, Heading, Link } from "@chakra-ui/layout";
 import { useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, VFC } from "react";
 import { useHistory } from "react-router";
+import { useRecoilValue } from "recoil";
+import { authState } from "../../../providers/LoginUserProvider";
 import { MenuIconButton } from "../../atoms/button/MenuIconButton";
 import { MenuDrawer } from "../../molecules/MenuDrawer";
+import { LogoutBtn } from "../../molecules/button/LogoutBtn";
+import { LoginBtn } from "../../molecules/button/LoginBtn";
 
 export const Header: VFC = memo(() => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -17,6 +21,9 @@ export const Header: VFC = memo(() => {
     () => history.push("/home/setting"),
     [history]
   );
+  const userState = useRecoilValue(authState);
+
+  const onClickSignUp = useCallback(() => history.push("/signup"), [history]);
   return (
     <>
       <Flex
@@ -35,7 +42,7 @@ export const Header: VFC = memo(() => {
           onClick={onClickHome}
         >
           <Heading as="h1" fontSize={{ base: "md", md: "lg" }}>
-            ユーザー管理アプリ
+            REACT PORTFOLIO APP
           </Heading>
         </Flex>
         <Flex
@@ -44,10 +51,14 @@ export const Header: VFC = memo(() => {
           flexGrow={2}
           display={{ base: "none", md: "flex" }}
         >
+          <Box pr={4}>{userState ? <LogoutBtn /> : <LoginBtn />}</Box>
+          <Box pr={4}>
+            {userState ?? <Link onClick={onClickSignUp}>新規登録</Link>}
+          </Box>
           <Box pr={4}>
             <Link onClick={onClickUserManagement}>ユーザー一覧</Link>
           </Box>
-          <Box>
+          <Box pr={4}>
             <Link onClick={onClickSetting}>設定</Link>
           </Box>
         </Flex>
@@ -58,6 +69,7 @@ export const Header: VFC = memo(() => {
           onClickHome={onClickHome}
           onClickUserManagement={onClickUserManagement}
           onClickSetting={onClickSetting}
+          onClickSignUp={onClickSignUp}
         />
       </Flex>
     </>
