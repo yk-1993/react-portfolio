@@ -51,9 +51,13 @@ export const Header: VFC = memo(() => {
           flexGrow={2}
           display={{ base: "none", md: "flex" }}
         >
-          <Box pr={4}>{userState ? <LogoutBtn /> : <LoginBtn />}</Box>
+          <Box pr={4}>{userState?.uid ? <LogoutBtn /> : <LoginBtn />}</Box>
           <Box pr={4}>
-            {userState ?? <Link onClick={onClickSignUp}>新規登録</Link>}
+            {userState?.uid ? (
+              ""
+            ) : (
+              <Link onClick={onClickSignUp}>新規登録</Link>
+            )}
           </Box>
           <Box pr={4}>
             <Link onClick={onClickUserManagement}>ユーザー一覧</Link>

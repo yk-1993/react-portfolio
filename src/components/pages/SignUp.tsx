@@ -5,12 +5,29 @@ import { ChangeEvent, memo, useState, VFC } from "react";
 import { auth } from "../../firebase";
 
 export const SignUp: VFC = memo(() => {
+  // エラーメッセージ用 useState
+  const [errMessage, setErrMessage] = useState<string>("");
+
   //登録ボタン押下
   const onRegister = () => {
     console.log("登録");
     console.log(email);
     console.log(password);
-    auth.createUserWithEmailAndPassword(email, password);
+    auth.createUserWithEmailAndPassword(email, password).catch((error) => {
+      if (error.code === "auth/invalid-email") {
+        setErrMessage("正しい形式でメールアドレスを入力してください");
+      } else if (error.code === "auth/user-disabled") {
+        setErrMessage("アカウントが無効です");
+      } else if (error.code === "auth/user-not-found") {
+        setErrMessage("アカウントが存在しません");
+      } else if (error.code === "auth/wrong-password") {
+        setErrMessage("パスワードが間違っています");
+      } else if (error.code === "auth/too-many-requests") {
+        setErrMessage("パスワードを何度も間違っています");
+      } else {
+        console.log(`エラー：${error}`);
+      }
+    });
   };
 
   // 入力されたメールアドレスをuseStateにセット
@@ -52,7 +69,10 @@ export const SignUp: VFC = memo(() => {
           <Stack spacing={3} py={4} px={10}>
             <Input placeholder="メールアドレス" onChange={onChangeEmail} />
             <Input placeholder="パスワード" onChange={onChangePassword} />
-            <Button onClick={onRegister}>登録</Button>
+            <Button onClick={onRegister}>登録</Button>{" "}
+            <Box fontSize="sm" color="red.400" fontWeight="bold">
+              {errMessage ?? { errMessage }}
+            </Box>
           </Stack>
         </Box>
       </Flex>

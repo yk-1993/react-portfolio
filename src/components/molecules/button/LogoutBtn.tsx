@@ -18,7 +18,7 @@ export const LogoutBtn: VFC = memo(() => {
     setUserState(null);
     // ログアウト後はログイン画面に遷移
     history.push("/login");
-    showMessage({ title: "ログアウトしました", status: "success" });
+    showMessage({ title: "ログアウトしました", status: "info" });
   };
   return (
     <Button
