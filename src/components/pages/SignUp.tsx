@@ -1,33 +1,74 @@
 import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { EmailIcon, UnlockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+} from "@chakra-ui/input";
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/layout";
 import { ChangeEvent, memo, useState, VFC } from "react";
+import { useHistory } from "react-router";
 import { auth } from "../../firebase";
+import { MaterialDatePicker } from "../../hooks/MaterialDatePicker";
+import { UseMessage } from "../../hooks/useMessage";
+
+// 新規ユーザ登録画面
 
 export const SignUp: VFC = memo(() => {
+  const { showMessage } = UseMessage();
+  // 画面遷移用のhooksを定義
+  const history = useHistory();
   // エラーメッセージ用 useState
   const [errMessage, setErrMessage] = useState<string>("");
 
   //登録ボタン押下
   const onRegister = () => {
+    // フロント側でのバリデーションチェック
+    const validResult = checkPwValidation();
+    // バリデーションエラーの場合は登録処理しない
+    if (!validResult) {
+      return;
+    }
+
     console.log("登録");
     console.log(email);
-    console.log(password);
-    auth.createUserWithEmailAndPassword(email, password).catch((error) => {
-      if (error.code === "auth/invalid-email") {
-        setErrMessage("正しい形式でメールアドレスを入力してください");
-      } else if (error.code === "auth/user-disabled") {
-        setErrMessage("アカウントが無効です");
-      } else if (error.code === "auth/user-not-found") {
-        setErrMessage("アカウントが存在しません");
-      } else if (error.code === "auth/wrong-password") {
-        setErrMessage("パスワードが間違っています");
-      } else if (error.code === "auth/too-many-requests") {
-        setErrMessage("パスワードを何度も間違っています");
-      } else {
-        console.log(`エラー：${error}`);
-      }
-    });
+    auth
+      // emailとpasswordをFirebase Authenticationに送信、登録
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        showMessage({ title: "登録に成功しました", status: "success" });
+        history.push("/");
+      })
+      // Firebase側でのバリデーションチェックとエラーハンドリング
+      .catch((error) => {
+        showMessage({ title: "登録に失敗しました", status: "error" });
+        console.log(error.code);
+        if (error.code === "auth/invalid-email") {
+          setErrMessage("正しい形式でメールアドレスを入力してください");
+        } else if (error.code === "auth/user-disabled") {
+          setErrMessage("アカウントが無効です");
+        } else if (error.code === "auth/email-already-in-use") {
+          setErrMessage("既に登録されているアカウントです");
+        } else if (error.code === "auth/weak-password") {
+          setErrMessage("パスワードは６文字以上で入力してください");
+        } else if (error.code === "auth/too-many-requests") {
+          setErrMessage("パスワードを何度も間違っています");
+        } else {
+          console.log(`エラー：${error}`);
+        }
+      });
+  };
+
+  const checkPwValidation = (): boolean => {
+    // パスワード再入力用バリデーション
+    if (password === rePassword) {
+      return true;
+    } else {
+      setErrMessage("再入力されたパスワードが一致しません");
+      return false;
+    }
   };
 
   // 入力されたメールアドレスをuseStateにセット
@@ -38,38 +79,128 @@ export const SignUp: VFC = memo(() => {
   const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
+  // 再入力されたパスワードをuseStateにセット
+  const onChangeRePassword = (e: ChangeEvent<HTMLInputElement>) => {
+    setRePassword(e.target.value);
+  };
 
+  // パスワード表示制御用のuseState
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+
+  // メールアドレス、パスワード用のuseState
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  // 再入力パスワード用のuseState
+  const [rePassword, setRePassword] = useState<string>("");
 
   return (
     <>
-      {/* <div>
-        <h1>ユーザ登録</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>メールアドレス</label>
-            <input name="email" type="email" placeholder="email" />
-          </div>
-          <div>
-            <label>パスワード</label>
-            <input name="password" type="password" />
-          </div>
-          <div>
-            <button>登録</button>
-          </div>
-        </form>
-      </div> */}
       <Flex align="center" justify="center" height="100vh">
-        <Box bg="white" w="sm" p={4} borderRadius="md" shadow="md">
+        <Box bg="white" w="lg" p={4} borderRadius="md" shadow="md">
           <Heading as="h1" size="md" textAlign="center">
             新規ユーザー登録
           </Heading>
           <Divider my={4} />
+          {/**氏名入力フォーム */}
           <Stack spacing={3} py={4} px={10}>
-            <Input placeholder="メールアドレス" onChange={onChangeEmail} />
-            <Input placeholder="パスワード" onChange={onChangePassword} />
-            <Button onClick={onRegister}>登録</Button>{" "}
+            <Flex align="center" justifyContent="space-between">
+              <Box w="47.5%">
+                <FormControl isRequired>
+                  <FormLabel>氏</FormLabel>
+                  <InputGroup size="md">
+                    <Input placeholder="例：鈴木" />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+              <Box w="47.5%">
+                <FormControl isRequired>
+                  <FormLabel>名</FormLabel>
+                  <InputGroup size="md">
+                    <Input placeholder="例：太郎" />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+            </Flex>
+            <MaterialDatePicker />
+            {/* <Flex align="center" justifyContent="space-between">
+              <Box w="45%">
+                <FormControl isRequired>
+                  <FormLabel>生年月日</FormLabel>
+                  <InputGroup size="md">
+                    <Select>{yearList}</Select>
+                  </InputGroup>
+                </FormControl>
+              </Box>
+              <Box w="25%">
+                <FormControl isRequired>
+                  <FormLabel></FormLabel>
+                  <InputGroup size="md">
+                    <Select placeholder="1" />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+              <Box w="25%">
+                <FormControl isRequired>
+                  <FormLabel></FormLabel>
+                  <InputGroup size="md">
+                    <Select placeholder="1" />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+            </Flex> */}
+            {/**メールアドレスフォーム */}
+            <FormControl isRequired>
+              <FormLabel>メールアドレス</FormLabel>
+              <InputGroup size="md">
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<EmailIcon color="gray.300" />}
+                ></InputLeftElement>
+                <Input
+                  type="email"
+                  placeholder="example@gmail.com"
+                  onChange={onChangeEmail}
+                />
+              </InputGroup>
+            </FormControl>
+            {/**パスワードフォーム */}
+            <FormControl isRequired>
+              <FormLabel>パスワード</FormLabel>
+              <InputGroup size="md">
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<UnlockIcon color="gray.300" />}
+                ></InputLeftElement>
+                <Input
+                  placeholder="パスワードを入力してください"
+                  type={show ? "text" : "password"}
+                  onChange={onChangePassword}
+                />
+                <InputRightElement width="3rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            {/**パスワード再入力フォーム */}
+            <FormControl isRequired>
+              <InputGroup size="md">
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<UnlockIcon color="gray.300" />}
+                ></InputLeftElement>
+                <Input
+                  placeholder="パスワードを再入力してください"
+                  type={show ? "text" : "password"}
+                  onChange={onChangeRePassword}
+                />
+              </InputGroup>
+            </FormControl>
+            <Button onClick={onRegister} disabled={false}>
+              登録
+            </Button>
             <Box fontSize="sm" color="red.400" fontWeight="bold">
               {errMessage ?? { errMessage }}
             </Box>

@@ -7,7 +7,7 @@ import {
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/layout";
 import { memo, useRef, useState, VFC, ChangeEvent } from "react";
 import { PrimaryButton } from "../atoms/button/PrimaryButton";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import firebase from "firebase";
 import { useHistory } from "react-router";
@@ -16,7 +16,7 @@ import { Button } from "@chakra-ui/button";
 import { EmailIcon, UnlockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 export const Login: VFC = memo(() => {
-  const [userState, setUserState] = useRecoilState(authState);
+  const setUserState = useSetRecoilState(authState);
   const { showMessage } = UseMessage();
 
   // useRefを定義
@@ -79,7 +79,7 @@ export const Login: VFC = memo(() => {
     }
   };
   return (
-    <Flex align="center" justify="center" height="100vh">
+    <Flex align="center" justify="center" height="100%">
       <Box bg="white" w="sm" p={4} borderRadius="md" shadow="md">
         <Heading as="h1" size="md" textAlign="center">
           ログイン画面

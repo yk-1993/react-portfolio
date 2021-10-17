@@ -1,5 +1,6 @@
+import { Box } from "@chakra-ui/layout";
 import { memo, VFC } from "react";
 
 export const Top: VFC = memo(() => {
-  return <p>Topページです</p>;
+  return <Box height="100vh">Topページです</Box>;
 });
