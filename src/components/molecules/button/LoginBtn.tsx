@@ -14,6 +14,7 @@ export const LoginBtn: VFC = memo(() => {
       onClick={login}
       fontSize="sm"
       w={{ md: "auto", sm: "100%" }}
+      borderRadius={{ md: "10px", sm: "0" }}
     >
       ログイン
     </Button>

@@ -26,6 +26,7 @@ export const LogoutBtn: VFC = memo(() => {
       onClick={logout}
       fontSize="sm"
       w={{ md: "auto", sm: "100%" }}
+      borderRadius={{ md: "10px", sm: "0" }}
     >
       ログアウト
     </Button>
