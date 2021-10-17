@@ -1,25 +1,42 @@
 import { memo, useEffect, useState, VFC } from "react";
 import { Login } from "../components/pages/Login";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { Page404 } from "../components/pages/Page404";
-import { HeaderLayout } from "../components/templates/HeaderLayout";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { SignUp } from "../components/pages/SignUp";
 import firebase from "firebase";
 import { authState } from "../providers/LoginUserProvider";
 import { Home } from "../components/pages/Home";
 import { Top } from "../components/pages/Top";
+import { NormalLayout } from "../components/templates/NormalLayout";
 
 export const Router: VFC = memo(() => {
   const setAuth = useSetRecoilState(authState);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // ログイン状態を監視
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((authUser) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(async (authUser) => {
       if (authUser) {
         setAuth(authUser);
+        // ログイン済みのユーザー情報が存在するかチェック
+        var userDoc = await firebase
+          .firestore()
+          .collection("users")
+          .doc(authUser.uid)
+          .get();
+        if (!userDoc.exists) {
+          // Firestore にユーザー用のドキュメントが存在しなければ作成
+          await userDoc.ref.set({
+            screen_name: authUser.uid,
+            display_name: "名無しさん",
+            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        }
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
     return () => {
       unsubscribe();
@@ -31,31 +48,25 @@ export const Router: VFC = memo(() => {
         <p>Loading...</p>
       ) : (
         <Switch>
-          {/* <HeaderLayout>
-            <PrivateRoute exact path="/" component={Home} />
-          </HeaderLayout>
-          <HeaderLayout>
-            <GuestRoute path="/login" component={Login} />
-          </HeaderLayout> */}
           <Route exact path="/">
-            <HeaderLayout>
+            <NormalLayout>
               <Top />
-            </HeaderLayout>
+            </NormalLayout>
           </Route>
           <Route path="/login">
-            <HeaderLayout>
+            <NormalLayout>
               <Login />
-            </HeaderLayout>
+            </NormalLayout>
           </Route>
           <Route path="/home">
-            <HeaderLayout>
+            <NormalLayout>
               <Home />
-            </HeaderLayout>
+            </NormalLayout>
           </Route>
           <Route path="/signup">
-            <HeaderLayout>
+            <NormalLayout>
               <SignUp />
-            </HeaderLayout>
+            </NormalLayout>
           </Route>
           {/* <Route
               path="/home"

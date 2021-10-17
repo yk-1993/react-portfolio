@@ -1,5 +1,14 @@
 export type User = {
-  name?: string;
+  uid: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  password: string;
+  phone?: number;
+  birthDate: Date;
+  address: {
+    postalcode: number;
+    prefecture: string;
+    address1: string;
+    address2?: string;
+  };
 };
