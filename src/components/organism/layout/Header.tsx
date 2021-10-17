@@ -28,7 +28,7 @@ export const Header: VFC = memo(() => {
     <>
       <Flex
         as="nav"
-        bg="teal.500"
+        bgGradient="linear(to-r,green.200,teal.500)"
         color="gray.50"
         align="center"
         justify="space-between"
