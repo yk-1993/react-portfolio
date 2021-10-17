@@ -7,17 +7,25 @@ import { useRecoilState } from "recoil";
 import { UserInfoProvider } from "../providers/UserInfoProvider";
 import { User } from "../types/user";
 
+// 生年月日 カレンダー (Material UI)
 export const MaterialDatePicker = () => {
+  // グローバルステート定義
   const [user, setUser] = useRecoilState<User>(UserInfoProvider);
+  // 初期値はDate型のuseStateで作成
   const [date, setDate] = useState(new Date(2000, 0, 1, 1, 1, 1));
+
+  // 日付変更時に処理
   const onChange = (date) => {
+    // カレンダーの値を更新
     setDate(date);
+    // Date型からString型に変更し、Userグローバルステートに部分更新
+    const selectBirth = date.toLocaleDateString();
+    setUser({ ...user, birthDate: selectBirth });
   };
+  // Userグローバルステートが更新されている 確認用
   useEffect(() => {
-    setUser({ ...user, birthDate: date });
-    console.log(date);
     console.log(user);
-  }, [date]);
+  }, [user]);
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>

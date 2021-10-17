@@ -10,7 +10,7 @@ export const UserInfoProvider = atom<User>({
     lastName: "",
     email: "",
     phone: 0,
-    birthDate: new Date(),
+    birthDate: "",
     address: {
       postalcode: 0,
       prefecture: "",

@@ -4,7 +4,7 @@ export type User = {
   lastName: string;
   email: string;
   phone?: number;
-  birthDate: Date;
+  birthDate: string;
   address: {
     postalcode: number;
     prefecture: string;
