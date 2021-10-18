@@ -3,10 +3,10 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
-  phone?: number;
+  phone?: string;
   birthDate: string;
   address: {
-    postalcode: number;
+    postalcode: string;
     prefecture: string;
     address1: string;
     address2?: string;

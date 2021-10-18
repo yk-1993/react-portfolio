@@ -5,18 +5,26 @@ import {
   InputLeftElement,
 } from "@chakra-ui/input";
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/layout";
-import { memo, useRef, useState, VFC, ChangeEvent } from "react";
+import { memo, useRef, useState, VFC, ChangeEvent, useEffect } from "react";
 import { PrimaryButton } from "../atoms/button/PrimaryButton";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import firebase from "firebase";
 import { useHistory } from "react-router";
 import { UseMessage } from "../../hooks/useMessage";
 import { Button } from "@chakra-ui/button";
 import { EmailIcon, UnlockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { UserInfoProvider } from "../../providers/UserInfoProvider";
 
 export const Login: VFC = memo(() => {
+  // Firebase認証用グローバルステート
   const setUserState = useSetRecoilState(authState);
+  // フロント側画面間連携情報用グローバルステート
+  const [user, setUser] = useRecoilState(UserInfoProvider);
+  useEffect(() => {
+    console.log(user);
+  }, []);
+
   const { showMessage } = UseMessage();
 
   // useRefを定義

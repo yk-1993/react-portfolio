@@ -10,18 +10,30 @@ import {
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/layout";
 import { ChangeEvent, memo, useState, VFC } from "react";
 import { useHistory } from "react-router";
+import { useRecoilState } from "recoil";
 import { auth } from "../../firebase";
 import { MaterialDatePicker } from "../../hooks/MaterialDatePicker";
 import { UseMessage } from "../../hooks/useMessage";
+import { UseSetInput } from "../../hooks/useSetInput";
+import { UserInfoProvider } from "../../providers/UserInfoProvider";
+import { IconForm } from "../molecules/form/IconForm";
+import { NormalForm } from "../molecules/form/NormalForm";
 
 // 新規ユーザ登録画面
 
 export const SignUp: VFC = memo(() => {
-  const { showMessage } = UseMessage();
   // 画面遷移用のhooksを定義
   const history = useHistory();
   // エラーメッセージ用 useState
   const [errMessage, setErrMessage] = useState<string>("");
+
+  // ローカルにユーザー情報を登録
+  const { setRegisterUser } = UseSetInput();
+  // メッセージトースト
+
+  const { showMessage } = UseMessage();
+  // フロント側画面間連携情報用グローバルステート
+  const [user, setUser] = useRecoilState(UserInfoProvider);
 
   //登録ボタン押下
   const onRegister = () => {
@@ -106,64 +118,33 @@ export const SignUp: VFC = memo(() => {
           <Stack spacing={3} py={4} px={10}>
             <Flex align="center" justifyContent="space-between">
               <Box w="47.5%">
-                <FormControl isRequired>
-                  <FormLabel>氏</FormLabel>
-                  <InputGroup size="md">
-                    <Input placeholder="例：鈴木" />
-                  </InputGroup>
-                </FormControl>
+                <NormalForm
+                  formLabel="氏"
+                  isRequiredFlag={true}
+                  placeholder="例：鈴木"
+                  inputType="firstName"
+                />
               </Box>
               <Box w="47.5%">
-                <FormControl isRequired>
-                  <FormLabel>名</FormLabel>
-                  <InputGroup size="md">
-                    <Input placeholder="例：太郎" />
-                  </InputGroup>
-                </FormControl>
+                <NormalForm
+                  formLabel="名"
+                  isRequiredFlag={true}
+                  placeholder="例：太郎"
+                  inputType="lastName"
+                />
               </Box>
             </Flex>
+            {/**生年月日フォームカレンダー */}
             <MaterialDatePicker />
-            {/* <Flex align="center" justifyContent="space-between">
-              <Box w="45%">
-                <FormControl isRequired>
-                  <FormLabel>生年月日</FormLabel>
-                  <InputGroup size="md">
-                    <Select>{yearList}</Select>
-                  </InputGroup>
-                </FormControl>
-              </Box>
-              <Box w="25%">
-                <FormControl isRequired>
-                  <FormLabel></FormLabel>
-                  <InputGroup size="md">
-                    <Select placeholder="1" />
-                  </InputGroup>
-                </FormControl>
-              </Box>
-              <Box w="25%">
-                <FormControl isRequired>
-                  <FormLabel></FormLabel>
-                  <InputGroup size="md">
-                    <Select placeholder="1" />
-                  </InputGroup>
-                </FormControl>
-              </Box>
-            </Flex> */}
-            {/**メールアドレスフォーム */}
-            <FormControl isRequired>
-              <FormLabel>メールアドレス</FormLabel>
-              <InputGroup size="md">
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<EmailIcon color="gray.300" />}
-                ></InputLeftElement>
-                <Input
-                  type="email"
-                  placeholder="example@gmail.com"
-                  onChange={onChangeEmail}
-                />
-              </InputGroup>
-            </FormControl>
+
+            <IconForm
+              formLabel="メールアドレス"
+              isRequiredFlag={true}
+              placeholder="example@gmail.com"
+              leftIcon={<EmailIcon color="gray.300" />}
+              inputType="email"
+            />
+
             {/**パスワードフォーム */}
             <FormControl isRequired>
               <FormLabel>パスワード</FormLabel>
@@ -204,6 +185,7 @@ export const SignUp: VFC = memo(() => {
             <Box fontSize="sm" color="red.400" fontWeight="bold">
               {errMessage ?? { errMessage }}
             </Box>
+            <Button onClick={setRegisterUser}>TEST</Button>
           </Stack>
         </Box>
       </Flex>
