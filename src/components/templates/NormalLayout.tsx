@@ -11,7 +11,7 @@ export const NormalLayout: VFC<Props> = memo((props) => {
   const { children } = props;
   return (
     <>
-      <Stack height="100vh">
+      <Stack height="100vh" spacing="10">
         <Header />
         {children}
         <Footer />

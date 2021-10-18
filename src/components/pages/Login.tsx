@@ -11,7 +11,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import firebase from "firebase";
 import { useHistory } from "react-router";
-import { UseMessage } from "../../hooks/useMessage";
+import { useMessage } from "../../hooks/useMessage";
 import { Button } from "@chakra-ui/button";
 import { EmailIcon, UnlockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { UserInfoProvider } from "../../providers/UserInfoProvider";
@@ -25,7 +25,7 @@ export const Login: VFC = memo(() => {
     console.log(user);
   }, []);
 
-  const { showMessage } = UseMessage();
+  const { showMessage } = useMessage();
 
   // useRefを定義
   const inputEmailRef = useRef<HTMLInputElement>(null);
@@ -87,7 +87,7 @@ export const Login: VFC = memo(() => {
     }
   };
   return (
-    <Flex align="center" justify="center" height="100%">
+    <Flex align="center" justify="center">
       <Box bg="white" w="sm" p={4} borderRadius="md" shadow="md">
         <Heading as="h1" size="md" textAlign="center">
           ログイン画面

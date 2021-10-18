@@ -2,10 +2,10 @@ import axios from "axios";
 import { useCallback, useState } from "react";
 import { User } from "../types/user";
 import { useHistory } from "react-router";
-import { UseMessage } from "./useMessage";
+import { useMessage } from "./useMessage";
 export const useAuth = () => {
   const history = useHistory();
-  const { showMessage } = UseMessage();
+  const { showMessage } = useMessage();
   const [loading, setLoading] = useState(false);
 
   const login = useCallback(

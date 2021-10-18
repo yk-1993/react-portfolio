@@ -1,6 +1,13 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { EmailIcon, UnlockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+  EmailIcon,
+  PhoneIcon,
+  SearchIcon,
+  UnlockIcon,
+  ViewIcon,
+  ViewOffIcon,
+} from "@chakra-ui/icons";
 import {
   Input,
   InputGroup,
@@ -10,51 +17,118 @@ import {
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/layout";
 import { ChangeEvent, memo, useState, VFC } from "react";
 import { useHistory } from "react-router";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { auth } from "../../firebase";
 import { MaterialDatePicker } from "../../hooks/MaterialDatePicker";
-import { UseMessage } from "../../hooks/useMessage";
-import { UseSetInput } from "../../hooks/useSetInput";
-import { UserInfoProvider } from "../../providers/UserInfoProvider";
+import { useMessage } from "../../hooks/useMessage";
+import { usePostalCodeGetAddress } from "../../hooks/usePostalcodeGetAddress";
+import {
+  UserInfoAddress1,
+  UserInfoAddress2,
+  UserInfoEmail,
+  UserInfoPostalcode,
+  UserInfoPrefecture,
+} from "../../providers/UserInfoProvider";
 import { IconForm } from "../molecules/form/IconForm";
 import { NormalForm } from "../molecules/form/NormalForm";
+import { UseValidation } from "../../hooks/useValidation";
+import { UseRegister } from "../../hooks/useRegister";
 
 // 新規ユーザ登録画面
 
 export const SignUp: VFC = memo(() => {
   // 画面遷移用のhooksを定義
   const history = useHistory();
-  // エラーメッセージ用 useState
+  // Firebase 認証エラーメッセージ用 useState
   const [errMessage, setErrMessage] = useState<string>("");
 
-  // ローカルにユーザー情報を登録
-  const { setRegisterUser } = UseSetInput();
+  // ローカルにユーザー情報を登録フック定義
+  const { setRegisterUser } = UseRegister();
   // メッセージトースト
+  const { showMessage } = useMessage();
+  // 郵便番号検索API
+  const { getAddress } = usePostalCodeGetAddress();
 
-  const { showMessage } = UseMessage();
-  // フロント側画面間連携情報用グローバルステート
-  const [user, setUser] = useRecoilState(UserInfoProvider);
+  // メールアドレス認証用グローバルステート
+  const [emailIns] = useRecoilState(UserInfoEmail);
+
+  // 郵便番号検索後、フォームにセットするためのステート定義
+  const prefecture = useRecoilValue(UserInfoPrefecture);
+  const setPostalcodeGlobal = useSetRecoilState(UserInfoPostalcode);
+  const address1 = useRecoilValue(UserInfoAddress1);
+  const address2 = useRecoilValue(UserInfoAddress2);
+
+  // バリデーション読込
+  const {
+    checkFirstNameValid,
+    checkLastNameValid,
+    checkPwValidation,
+    checkPhoneValidation,
+    checkBirthDateValid,
+    checkPostalcodeValid,
+    checkAddressValid,
+    errMessageFirstName,
+    errMessageLastName,
+    errMessagePw,
+    errMessagePhone,
+    errMessageBirthDate,
+    errMessagePost,
+    errMessageAddress,
+  } = UseValidation();
 
   //登録ボタン押下
   const onRegister = () => {
-    // フロント側でのバリデーションチェック
-    const validResult = checkPwValidation();
+    // Firebase Auth側のエラーメッセージ初期化
+    setErrMessage("");
+
+    // 入力された情報をフロント側に登録
+    setRegisterUser();
+    //
+    /* フロント側でのバリデーションチェック
+     */
+
+    // 名字
+    const validResultFirstname: boolean = checkFirstNameValid();
+    // 名前
+    const validResultLastName: boolean = checkLastNameValid();
+    // 生年月日
+    const validResultBirthDate: boolean = checkBirthDateValid();
+    // パスワード
+    const validResultPw: boolean = checkPwValidation({
+      password: password,
+      rePassword: rePassword,
+    });
+    // 電話番号
+    const validResultPhone: boolean = checkPhoneValidation();
+    // 郵便番号（数字と桁数チェック。実際に存在するかどうかは外部APIコール部分で判定）
+    const validResultPost: boolean = checkPostalcodeValid();
+    // 住所（郵便番号検索語、自動入力）
+    const validResultAddress: boolean = checkAddressValid();
     // バリデーションエラーの場合は登録処理しない
-    if (!validResult) {
+    if (
+      !validResultPw ||
+      !validResultPhone ||
+      !validResultFirstname ||
+      !validResultLastName ||
+      !validResultPost ||
+      !validResultAddress ||
+      !validResultBirthDate
+    ) {
       return;
     }
 
     console.log("登録");
-    console.log(email);
+    console.log(emailIns);
+    // emailとpasswordをFirebase Authenticationに送信、登録
+
     auth
-      // emailとpasswordをFirebase Authenticationに送信、登録
-      .createUserWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(emailIns, password)
       .then(() => {
         showMessage({ title: "登録に成功しました", status: "success" });
         history.push("/");
       })
-      // Firebase側でのバリデーションチェックとエラーハンドリング
       .catch((error) => {
+        // Firebase側でのバリデーションチェックとエラーハンドリング
         showMessage({ title: "登録に失敗しました", status: "error" });
         console.log(error.code);
         if (error.code === "auth/invalid-email") {
@@ -73,19 +147,10 @@ export const SignUp: VFC = memo(() => {
       });
   };
 
-  const checkPwValidation = (): boolean => {
-    // パスワード再入力用バリデーション
-    if (password === rePassword) {
-      return true;
-    } else {
-      setErrMessage("再入力されたパスワードが一致しません");
-      return false;
-    }
-  };
-
-  // 入力されたメールアドレスをuseStateにセット
-  const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+  // 入力された郵便番号をuseStateにセット
+  const onChangePostcode = (e: ChangeEvent<HTMLInputElement>) => {
+    setPostcode(e.target.value);
+    setPostalcodeGlobal(e.target.value);
   };
   // 入力されたパスワードをuseStateにセット
   const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,15 +165,14 @@ export const SignUp: VFC = memo(() => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
 
-  // メールアドレス、パスワード用のuseState
-  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   // 再入力パスワード用のuseState
   const [rePassword, setRePassword] = useState<string>("");
+  const [postcode, setPostcode] = useState<string>("");
 
   return (
     <>
-      <Flex align="center" justify="center" height="100vh">
+      <Flex align="center" justify="center">
         <Box bg="white" w="lg" p={4} borderRadius="md" shadow="md">
           <Heading as="h1" size="md" textAlign="center">
             新規ユーザー登録
@@ -134,9 +198,30 @@ export const SignUp: VFC = memo(() => {
                 />
               </Box>
             </Flex>
+            {errMessageFirstName ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessageFirstName}
+              </Box>
+            ) : (
+              ""
+            )}
+            {errMessageLastName ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessageLastName}
+              </Box>
+            ) : (
+              ""
+            )}
             {/**生年月日フォームカレンダー */}
             <MaterialDatePicker />
-
+            {errMessageBirthDate ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessageBirthDate}
+              </Box>
+            ) : (
+              ""
+            )}
+            {/**メールアドレス入力フォーム */}
             <IconForm
               formLabel="メールアドレス"
               isRequiredFlag={true}
@@ -179,13 +264,130 @@ export const SignUp: VFC = memo(() => {
                 />
               </InputGroup>
             </FormControl>
-            <Button onClick={onRegister} disabled={false}>
+            {errMessagePw ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessagePw}
+              </Box>
+            ) : (
+              ""
+            )}
+            {/**電話番号フォーム */}
+            <IconForm
+              formLabel="電話番号"
+              isRequiredFlag={false}
+              placeholder="例：09012345678"
+              inputType="phone"
+              leftIcon={<PhoneIcon color="gray.300" />}
+            />
+
+            {errMessagePhone ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessagePhone}
+              </Box>
+            ) : (
+              ""
+            )}
+
+            <Divider height="5" />
+            {/**郵便番号入力フォーム
+             * 検索ボタン押下で郵便番号検索APIをコール
+             */}
+            <Box w="60%">
+              <FormControl isRequired>
+                <FormLabel>郵便番号</FormLabel>
+                <InputGroup size="md">
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<SearchIcon color="gray.300" />}
+                  />
+                  <Input
+                    placeholder="郵便番号を入力"
+                    onChange={onChangePostcode}
+                  />
+                  <InputRightElement width="4rem">
+                    <Button
+                      h="1.75rem"
+                      size="sm"
+                      onClick={() => getAddress(postcode)}
+                    >
+                      <Box>検索</Box>
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+            </Box>
+            {errMessagePost ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessagePost}
+              </Box>
+            ) : (
+              ""
+            )}
+            <FormControl isRequired>
+              <FormLabel>都道府県</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  placeholder="例：東京都"
+                  value={prefecture}
+                  variant="filled"
+                />
+              </InputGroup>
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>市長区村</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  placeholder="例：千代田区"
+                  value={address1}
+                  variant="filled"
+                />
+              </InputGroup>
+            </FormControl>
+            <Flex align="center" justifyContent="space-between">
+              <Box w="35%">
+                <FormControl isRequired>
+                  <FormLabel>番地</FormLabel>
+                  <InputGroup size="md">
+                    <Input
+                      placeholder="例：千代田"
+                      value={address2}
+                      variant="filled"
+                      onFocus={() => {
+                        console.log("郵便番号を入力してください");
+                      }}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+              <Box w="60%">
+                <NormalForm
+                  formLabel="番地以降"
+                  isRequiredFlag={false}
+                  placeholder="例：千代田レジデンス201"
+                  inputType="address3"
+                />
+              </Box>
+            </Flex>
+            {errMessageAddress ? (
+              <Box fontSize="sm" color="red.400" fontWeight="bold">
+                {errMessageAddress}
+              </Box>
+            ) : (
+              ""
+            )}
+            <Divider height="5" />
+            <Button
+              onClick={onRegister}
+              disabled={false}
+              backgroundColor={{ md: "teal.400", sm: "gray.100" }}
+              color="white"
+              _hober={{ opacity: 0.8 }}
+            >
               登録
             </Button>
             <Box fontSize="sm" color="red.400" fontWeight="bold">
               {errMessage ?? { errMessage }}
             </Box>
-            <Button onClick={setRegisterUser}>TEST</Button>
           </Stack>
         </Box>
       </Flex>

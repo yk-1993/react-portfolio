@@ -2,20 +2,24 @@ import { memo, useEffect, useState, VFC } from "react";
 import { Login } from "../components/pages/Login";
 import { Switch, Route } from "react-router-dom";
 import { Page404 } from "../components/pages/Page404";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { SignUp } from "../components/pages/SignUp";
 import firebase from "firebase";
 import { authState } from "../providers/LoginUserProvider";
 import { Home } from "../components/pages/Home";
 import { Top } from "../components/pages/Top";
 import { NormalLayout } from "../components/templates/NormalLayout";
+import { UserInfoProvider } from "../providers/UserInfoProvider";
 
 export const Router: VFC = memo(() => {
   const setAuth = useSetRecoilState(authState);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // ログイン状態を監視
+  // フロント側画面間連携情報ユーザー用のグローバルステートを定義
+  const [user] = useRecoilState(UserInfoProvider);
+
   useEffect(() => {
+    // ログイン状態を監視
     const unsubscribe = firebase.auth().onAuthStateChanged(async (authUser) => {
       if (authUser) {
         setAuth(authUser);
@@ -25,11 +29,23 @@ export const Router: VFC = memo(() => {
           .collection("users")
           .doc(authUser.uid)
           .get();
+        // Firestore にユーザー用のドキュメントが存在しなければ作成
         if (!userDoc.exists) {
-          // Firestore にユーザー用のドキュメントが存在しなければ作成
+          // フロント側に一時保存してあるユーザ情報をFireStoreに登録
           await userDoc.ref.set({
-            screen_name: authUser.uid,
-            display_name: "名無しさん",
+            uid: authUser.uid,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            birthDate: user.birthDate,
+            address: {
+              postalcode: user.address.postalcode,
+              prefecture: user.address.prefecture,
+              address1: user.address.address1,
+              address2: user.address.address2,
+              address3: user.address.address3,
+            },
             created_at: firebase.firestore.FieldValue.serverTimestamp(),
           });
         }
@@ -41,7 +57,7 @@ export const Router: VFC = memo(() => {
     return () => {
       unsubscribe();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <>
       {isLoading ? (

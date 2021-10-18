@@ -3,10 +3,10 @@
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { User } from "../types/user";
-import { UseMessage } from "./useMessage";
+import { useMessage } from "./useMessage";
 
 export const useAllUsers = () => {
-  const { showMessage } = UseMessage();
+  const { showMessage } = useMessage();
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<Array<User>>([]);
 

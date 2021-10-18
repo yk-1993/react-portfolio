@@ -1,12 +1,16 @@
 import { useCallback } from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import {
-  UserInfoProvider,
   UserInfoFirstName,
   UserInfoLastName,
   UserInfoEmail,
   UserInfoPhone,
   UserInfoBirthDate,
+  UserInfoPrefecture,
+  UserInfoPostalcode,
+  UserInfoAddress1,
+  UserInfoAddress2,
+  UserInfoAddress3,
 } from "../providers/UserInfoProvider";
 type Props = {
   inputType: string;
@@ -14,18 +18,21 @@ type Props = {
 };
 
 export const UseSetInput = () => {
-  const [firstName, setFirstName] = useRecoilState(UserInfoFirstName);
-  const [lastName, setLastName] = useRecoilState(UserInfoLastName);
-  const [email, setEmail] = useRecoilState(UserInfoEmail);
-  const [phone, setPhone] = useRecoilState(UserInfoPhone);
-  const [birthDate, setBirthDate] = useRecoilState(UserInfoBirthDate);
-
-  // フロント側画面間連携情報ユーザー用グローバルステート
-  const [user, setUser] = useRecoilState(UserInfoProvider);
+  // フロント側画面間連携情報ユーザー用、一時保存用のグローバルステートを定義
+  const setFirstName = useSetRecoilState(UserInfoFirstName);
+  const setLastName = useSetRecoilState(UserInfoLastName);
+  const setEmail = useSetRecoilState(UserInfoEmail);
+  const setPhone = useSetRecoilState(UserInfoPhone);
+  const setBirthDate = useSetRecoilState(UserInfoBirthDate);
+  const setPrefecture = useSetRecoilState(UserInfoPrefecture);
+  const setPostalcode = useSetRecoilState(UserInfoPostalcode);
+  const setAddress1 = useSetRecoilState(UserInfoAddress1);
+  const setAddress2 = useSetRecoilState(UserInfoAddress2);
+  const setAddress3 = useSetRecoilState(UserInfoAddress3);
 
   const setInputField = useCallback((props: Props) => {
     const { inputType, inputField } = props;
-
+    // フォームタイプによってセットするグローバルステートを出し分け
     switch (inputType) {
       case "firstName":
         setFirstName(inputField);
@@ -42,25 +49,23 @@ export const UseSetInput = () => {
       case "birthDate":
         setBirthDate(inputField);
         break;
+      case "prefecture":
+        setPrefecture(inputField);
+        break;
+      case "postalcode":
+        setPostalcode(inputField);
+        break;
+      case "address1":
+        setAddress1(inputField);
+        break;
+      case "address2":
+        setAddress2(inputField);
+        break;
+      case "address3":
+        setAddress3(inputField);
+        break;
     }
   }, []);
 
-  const setRegisterUser = () => {
-    setUser({
-      uid: "",
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      birthDate: birthDate,
-      address: {
-        postalcode: "",
-        prefecture: "",
-        address1: "",
-        address2: "",
-      },
-    });
-    console.log(user);
-  };
-  return { setInputField, setRegisterUser };
+  return { setInputField };
 };

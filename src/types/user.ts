@@ -9,6 +9,7 @@ export type User = {
     postalcode: string;
     prefecture: string;
     address1: string;
-    address2?: string;
+    address2: string;
+    address3?: string;
   };
 };

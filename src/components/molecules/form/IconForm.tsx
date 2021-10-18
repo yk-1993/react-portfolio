@@ -16,10 +16,11 @@ export const IconForm: VFC<Props> = memo((props) => {
   const { formLabel, isRequiredFlag, placeholder, leftIcon, inputType } = props;
 
   // フロント側画面間連携情報ユーザー用グローバルステート
-  const [user, setUser] = useRecoilState(UserInfoProvider);
+  const [user] = useRecoilState(UserInfoProvider);
   const { setInputField } = UseSetInput();
 
   const onChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
+    // 各フォームからのType,valueを渡してセット
     setInputField({ inputType: inputType, inputField: e.currentTarget.value });
   };
 
@@ -40,7 +41,7 @@ export const IconForm: VFC<Props> = memo((props) => {
           </InputGroup>
         </FormControl>
       ) : (
-        <FormControl isRequired>
+        <FormControl>
           <FormLabel>{formLabel}</FormLabel>
           <InputGroup size="md">
             <InputLeftElement

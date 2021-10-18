@@ -6,7 +6,6 @@ import { useAllUsers } from "../../hooks/useAllUsers";
 import { Spinner } from "@chakra-ui/spinner";
 import { useDisclosure } from "@chakra-ui/react";
 import { UserDetailModal } from "../organism/user/userDetailModal";
-import { useSelectUser } from "../../hooks/useSelectUser";
 import { useRecoilValue } from "recoil";
 
 export const UserManegement: VFC = memo(() => {

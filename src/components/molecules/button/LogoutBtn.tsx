@@ -3,12 +3,12 @@ import { memo, VFC } from "react";
 import { useHistory } from "react-router";
 import { useSetRecoilState } from "recoil";
 import { auth } from "../../../firebase";
-import { UseMessage } from "../../../hooks/useMessage";
+import { useMessage } from "../../../hooks/useMessage";
 import { authState } from "../../../providers/LoginUserProvider";
 
 export const LogoutBtn: VFC = memo(() => {
   const history = useHistory();
-  const { showMessage } = UseMessage();
+  const { showMessage } = useMessage();
   const setUserState = useSetRecoilState(authState);
 
   const logout = () => {
