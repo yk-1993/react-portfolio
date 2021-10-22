@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-export const MotionTest = (props) => {
+export const PopupMotion = (props) => {
   const { children } = props;
+
   return (
     <MotionBox
       sizeTransition
