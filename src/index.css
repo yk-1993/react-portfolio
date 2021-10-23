@@ -1,13 +1,41 @@
-body {
+@font-face {
+  font-family: "Futura";
+  src: url(./fonts/futur.ttf) format("truetype");
+}
+@font-face {
+  font-family: "KaiseiTokumin-Regular";
+  src: url(./fonts/KaiseiTokumin-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Dot";
+  src: url(./fonts/DotGothic16-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "KiwiNormal";
+  src: url(./fonts/KiwiMaru-Medium.ttf) format("truetype");
+}
+@font-face {
+  font-family: "KiwiLight";
+  src: url(./fonts/KiwiMaru-Light.ttf) format("truetype");
+}
+@font-face {
+  font-family: "KosugiMaru";
+  src: url(./fonts/KosugiMaru-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "KosugiRegular";
+  src: url(./fonts/Kosugi-Regular.ttf) format("truetype");
+}
+DotGothic16-Regular body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: "Futura", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
