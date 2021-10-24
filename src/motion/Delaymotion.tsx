@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 export const DelayMotion = (props) => {
   const { children } = props;
   const container = {
-    hidden: { height: 0 },
+    hidden: { height: "auto" },
     show: {
       height: "auto",
       transition: {
         duration: 0.5,
-        delayChildren: 0.5,
+        delayChildren: 0.3,
         staggerChildren: 0.1,
       },
     },

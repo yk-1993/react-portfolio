@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { Box } from "@chakra-ui/layout";
 
+//TOPページの背景アニメーション
 export const WideMotion = (props) => {
   const { children } = props;
   return (
@@ -25,7 +25,7 @@ export const WideMotion = (props) => {
       </MotionBox>
       <MotionBox02
         as={motion.div}
-        initial={{ scaleY: 0, y: 300, scaleX: 1 }}
+        initial={{ scaleY: 0, y: 500, scaleX: 1 }}
         animate={{
           scaleY: [0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
           scaleX: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -42,7 +42,7 @@ export const WideMotion = (props) => {
       </MotionBox02>
       <MotionBox03
         as={motion.div}
-        initial={{ scaleY: 0, y: 400, scaleX: 1 }}
+        initial={{ scaleY: 0, y: 100, scaleX: 1 }}
         animate={{
           scaleY: [0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
           scaleX: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
@@ -59,7 +59,7 @@ export const WideMotion = (props) => {
       </MotionBox03>
       <MotionBox04
         as={motion.div}
-        initial={{ scaleY: 0, y: 150, scaleX: 1 }}
+        initial={{ scaleY: 0, y: 800, scaleX: 1 }}
         animate={{
           scaleY: [0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
           scaleX: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
@@ -76,7 +76,7 @@ export const WideMotion = (props) => {
       </MotionBox04>
       <MotionBox05
         as={motion.div}
-        initial={{ scaleY: 0, y: 200, scaleX: 1 }}
+        initial={{ scaleY: 0, y: 300, scaleX: 1 }}
         animate={{
           scaleY: [0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10],
           scaleX: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
@@ -97,7 +97,7 @@ export const WideMotion = (props) => {
 
 const MotionBox = styled(motion.div)`
   width: 100%;
-  height: 90px;
+  height: 50px;
   background-color: #fff4ea;
   position: absolute;
   z-index: -1;
@@ -105,7 +105,7 @@ const MotionBox = styled(motion.div)`
 `;
 const MotionBox02 = styled(motion.div)`
   width: 100%;
-  height: 80px;
+  height: 60px;
   background-color: #ffffef;
   position: absolute;
   transform-origin: 0 center;
@@ -113,7 +113,7 @@ const MotionBox02 = styled(motion.div)`
 `;
 const MotionBox03 = styled(motion.div)`
   width: 100%;
-  height: 70px;
+  height: 50px;
   background-color: #f7ffef;
   transform-origin: 0 center;
   z-index: -1;
@@ -128,7 +128,7 @@ const MotionBox04 = styled(motion.div)`
 `;
 const MotionBox05 = styled(motion.div)`
   width: 100%;
-  height: 110px;
+  height: 130px;
   background-color: #eff7ff;
   z-index: -1;
   transform-origin: 0 center;

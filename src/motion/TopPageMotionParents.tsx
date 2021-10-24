@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { Center } from "@chakra-ui/layout";
 
 export const TopPageMotionParents = (props) => {
   const { children } = props;
@@ -10,8 +9,8 @@ export const TopPageMotionParents = (props) => {
       y: "100%",
       transition: {
         duration: 1,
-        delayChildren: 0.5,
-        staggerChildren: 0.3,
+        delayChildren: 5,
+        staggerChildren: 0.5,
         type: "spring",
       },
     },
