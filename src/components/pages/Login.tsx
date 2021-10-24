@@ -15,12 +15,14 @@ import { useMessage } from "../../hooks/useMessage";
 import { Button } from "@chakra-ui/button";
 import { EmailIcon, UnlockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { UserInfoProvider } from "../../providers/UserInfoProvider";
+import { DelayMotionChild } from "../../motion/DelaymotionChild";
+import { DelayMotionPopup } from "../../motion/DelaymotionPopup";
 
 export const Login: VFC = memo(() => {
   // Firebase認証用グローバルステート
   const setUserState = useSetRecoilState(authState);
   // フロント側画面間連携情報用グローバルステート
-  const [user, setUser] = useRecoilState(UserInfoProvider);
+  const [user] = useRecoilState(UserInfoProvider);
   useEffect(() => {
     console.log(user);
   }, []);
@@ -87,54 +89,61 @@ export const Login: VFC = memo(() => {
     }
   };
   return (
-    <Flex align="center" justify="center">
-      <Box bg="white" w="sm" p={4} borderRadius="md" shadow="md">
+    <Flex align="center" justify="center" minHeight="70vh">
+      <DelayMotionPopup>
         <Heading as="h1" size="md" textAlign="center">
           ログイン画面
         </Heading>
         <Divider my={4} />
         <Stack spacing={3} py={4} px={10}>
-          <InputGroup size="md">
-            <InputLeftElement
-              pointerEvents="none"
-              children={<EmailIcon color="gray.300" />}
-            ></InputLeftElement>
-            <Input
-              placeholder="メールアドレス"
-              ref={inputEmailRef}
-              value={email}
-              onChange={onChangeEmail}
-            />
-          </InputGroup>
-          <InputGroup size="md">
-            <InputLeftElement
-              pointerEvents="none"
-              children={<UnlockIcon color="gray.300" />}
-            ></InputLeftElement>
-            <Input
-              placeholder="パスワード"
-              type={show ? "text" : "password"}
-              ref={inputPasswordRef}
-              value={password}
-              onChange={onChangePassword}
-            />
-            <InputRightElement width="3rem">
-              <Button h="1.75rem" size="sm" onClick={handleClick}>
-                {show ? <ViewOffIcon /> : <ViewIcon />}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          <PrimaryButton
-            onClick={onClickLogin}
-            disabled={email === "" || password === ""}
-          >
-            ログイン
-          </PrimaryButton>
+          <DelayMotionChild>
+            <InputGroup size="md">
+              <InputLeftElement
+                pointerEvents="none"
+                children={<EmailIcon color="gray.300" />}
+              ></InputLeftElement>
+              <Input
+                placeholder="メールアドレス"
+                ref={inputEmailRef}
+                value={email}
+                onChange={onChangeEmail}
+              />
+            </InputGroup>
+          </DelayMotionChild>
+          <DelayMotionChild>
+            <InputGroup size="md">
+              <InputLeftElement
+                pointerEvents="none"
+                children={<UnlockIcon color="gray.300" />}
+              ></InputLeftElement>
+              <Input
+                placeholder="パスワード"
+                type={show ? "text" : "password"}
+                ref={inputPasswordRef}
+                value={password}
+                onChange={onChangePassword}
+              />
+              <InputRightElement width="3rem">
+                <Button h="1.75rem" size="sm" onClick={handleClick}>
+                  {show ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </DelayMotionChild>
+
+          <DelayMotionChild>
+            <PrimaryButton
+              onClick={onClickLogin}
+              disabled={email === "" || password === ""}
+            >
+              ログイン
+            </PrimaryButton>
+          </DelayMotionChild>
           <Box fontSize="sm" color="red.400" fontWeight="bold">
             {errMessage ?? { errMessage }}
           </Box>
         </Stack>
-      </Box>
+      </DelayMotionPopup>
     </Flex>
   );
 });

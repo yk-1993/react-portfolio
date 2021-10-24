@@ -22,11 +22,15 @@ export const LogoutBtn: VFC = memo(() => {
   };
   return (
     <Button
-      backgroundColor={{ md: "teal.400", sm: "gray.100" }}
+      backgroundColor={{ md: "white", sm: "gray.100" }}
       onClick={logout}
       fontSize="sm"
       w={{ md: "auto", sm: "100%" }}
-      borderRadius={{ md: "10px", sm: "0" }}
+      border="2px solid white"
+      _hover={{
+        backgroundColor: "#222",
+        color: "gray.100",
+      }}
     >
       ログアウト
     </Button>

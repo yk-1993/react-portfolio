@@ -1,21 +1,22 @@
-import { Box, Flex, Heading, Link } from "@chakra-ui/layout";
-import { memo, useCallback, VFC } from "react";
+import { Box, Flex, Heading } from "@chakra-ui/layout";
+import { memo, VFC } from "react";
 
 export const Footer: VFC = memo(() => {
   return (
     <>
-      <Box
-        as="nav"
-        bgGradient="linear(to-r,teal.500,green.200)"
-        color="gray.50"
+      <Flex
+        backgroundColor="white"
+        color="#222"
         m="auto"
-        textAlign="right"
+        justifyContent="flex-end"
         padding={{ base: "3", md: "5" }}
+        height="10vh"
+        alignItems="center"
       >
         <Heading as="h2" fontSize={{ base: "sm", md: "md" }}>
           Created by Yusuke Kimura 2021
         </Heading>
-      </Box>
+      </Flex>
     </>
   );
 });

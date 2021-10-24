@@ -14,8 +14,8 @@ export const useMessage = () => {
         title,
         status,
         position: "top",
-        duration: 2000,
-        isClosable: true,
+        duration: 3000,
+        isClosable: false,
       });
     },
     [toast]

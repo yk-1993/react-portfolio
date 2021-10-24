@@ -21,20 +21,13 @@ type Props = {
 };
 
 export const MenuDrawer: VFC<Props> = memo((props) => {
-  const {
-    onClose,
-    isOpen,
-    onClickHome,
-    onClickSetting,
-    onClickUserManagement,
-    onClickSignUp,
-  } = props;
+  const { onClose, isOpen, onClickHome, onClickSignUp } = props;
   const userState = useRecoilValue(authState);
   return (
     <Drawer placement="left" size="xs" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay>
         <DrawerContent>
-          <DrawerBody p={0} bg="gray.100">
+          <DrawerBody p={0} bg="white">
             <Button w={"100%"} onClick={onClickHome} borderRadius={0}>
               TOP
             </Button>
@@ -42,12 +35,6 @@ export const MenuDrawer: VFC<Props> = memo((props) => {
             {userState ? <LogoutBtn /> : <LoginBtn />}
             <Button w={"100%"} onClick={onClickSignUp} borderRadius={0}>
               新規登録
-            </Button>
-            <Button w={"100%"} onClick={onClickUserManagement} borderRadius={0}>
-              ユーザー一覧
-            </Button>
-            <Button w={"100%"} onClick={onClickSetting} borderRadius={0}>
-              設定
             </Button>
           </DrawerBody>
         </DrawerContent>

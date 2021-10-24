@@ -8,11 +8,12 @@ import { MenuIconButton } from "../../atoms/button/MenuIconButton";
 import { MenuDrawer } from "../../molecules/MenuDrawer";
 import { LogoutBtn } from "../../molecules/button/LogoutBtn";
 import { LoginBtn } from "../../molecules/button/LoginBtn";
+import { ScrollMotion } from "../../../motion/ScrollMotion";
 
 export const Header: VFC = memo(() => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const history = useHistory();
-  const onClickHome = useCallback(() => history.push("/home"), [history]);
+  const onClickHome = useCallback(() => history.push("/"), [history]);
   const onClickUserManagement = useCallback(
     () => history.push("/home/user_management"),
     [history]
@@ -28,11 +29,12 @@ export const Header: VFC = memo(() => {
     <>
       <Flex
         as="nav"
-        bgGradient="linear(to-r,green.200,teal.500)"
-        color="gray.50"
+        backgroundColor="white"
+        color="#222"
         align="center"
         justify="space-between"
         padding={{ base: "3", md: "5" }}
+        height="15vh"
       >
         <Flex
           align="center"
@@ -41,9 +43,11 @@ export const Header: VFC = memo(() => {
           _hover={{ cursor: "pointer" }}
           onClick={onClickHome}
         >
-          <Heading as="h1" fontSize={{ base: "md", md: "lg" }}>
-            REACT PORTFOLIO APP
-          </Heading>
+          <ScrollMotion>
+            <Heading as="h1" fontSize={{ base: "md", md: "lg" }}>
+              ＊ Yusuke Kimura
+            </Heading>
+          </ScrollMotion>
         </Flex>
         <Flex
           align="center"
@@ -51,20 +55,32 @@ export const Header: VFC = memo(() => {
           flexGrow={2}
           display={{ base: "none", md: "flex" }}
         >
-          <Box pr={4}>{userState?.uid ? <LogoutBtn /> : <LoginBtn />}</Box>
+          <Box pr={4}>
+            {userState?.uid ? (
+              <ScrollMotion>
+                <LogoutBtn />
+              </ScrollMotion>
+            ) : (
+              <ScrollMotion>
+                <LoginBtn />
+              </ScrollMotion>
+            )}
+          </Box>
           <Box pr={4}>
             {userState?.uid ? (
               ""
             ) : (
-              <Link onClick={onClickSignUp}>新規登録</Link>
+              <ScrollMotion>
+                <Link onClick={onClickSignUp}>新規登録</Link>
+              </ScrollMotion>
             )}
           </Box>
-          <Box pr={4}>
+          {/* <Box pr={4}>
             <Link onClick={onClickUserManagement}>ユーザー一覧</Link>
           </Box>
           <Box pr={4}>
             <Link onClick={onClickSetting}>設定</Link>
-          </Box>
+          </Box> */}
         </Flex>
         <MenuIconButton onOpen={onOpen} />
         <MenuDrawer

@@ -12,12 +12,13 @@ export const PrimaryButton: VFC<Props> = memo((props) => {
   const { children, onClick, disabled = false, loading = false } = props;
   return (
     <Button
-      bg="teal.400"
+      bg="#222"
       color="white"
       _hober={{ opacity: 0.8 }}
       onClick={onClick}
       isLoading={loading}
       isDisabled={disabled || loading}
+      w="100%"
     >
       {children}
     </Button>

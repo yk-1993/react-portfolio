@@ -1,4 +1,3 @@
-import { Stack } from "@chakra-ui/layout";
 import { memo, ReactNode, VFC } from "react";
 import { Footer } from "../organism/layout/Footer";
 import { Header } from "../organism/layout/Header";
@@ -11,11 +10,9 @@ export const NormalLayout: VFC<Props> = memo((props) => {
   const { children } = props;
   return (
     <>
-      <Stack height="100vh" spacing="10">
-        <Header />
-        {children}
-        <Footer />
-      </Stack>
+      <Header />
+      {children}
+      <Footer />
     </>
   );
 });
