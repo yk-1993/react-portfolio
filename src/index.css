@@ -3,6 +3,14 @@
   src: url(./fonts/futur.ttf) format("truetype");
 }
 @font-face {
+  font-family: "Yusei";
+  src: url(./fonts/YuseiMagic-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Ronde";
+  src: url(./fonts/Ronde-B_square.otf) format("truetype");
+}
+@font-face {
   font-family: "KaiseiTokumin-Regular";
   src: url(./fonts/KaiseiTokumin-Regular.ttf) format("truetype");
 }
