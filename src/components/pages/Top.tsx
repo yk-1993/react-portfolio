@@ -1,12 +1,41 @@
-import { Flex } from "@chakra-ui/layout";
+import { Flex, Box } from "@chakra-ui/layout";
+import { motion, useTransform, useViewportScroll } from "framer-motion";
 import { memo, VFC } from "react";
+import topBg from "../../assets/image/top_bg.jpg";
 import { ParallaxTest } from "../../motion/parallax/ParallaxTest";
+import { TextMotion } from "../../motion/TextMotion";
+import { WideMotion } from "../../motion/WideMotion";
+import { ContentsBox } from "../organism/toppage/ContentsBox";
+import styled from "styled-components";
+import { Image } from "@chakra-ui/image";
 export const Top: VFC = memo(() => {
+  const { scrollYProgress } = useViewportScroll();
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    [0.1, 0.6, 1],
+    ["rgba(0, 0, 0, 0);", "#FF0080", "#7928CA"]
+  );
   return (
     <>
-      <Flex height="70vh">
-        <ParallaxTest />
-      </Flex>
+      <SBox style={{ backgroundColor }}>
+        <Flex height="800px" overflow="hidden">
+          {/* <TextMotion>There is always light behind the clouds.</TextMotion> */}
+
+          <TextMotion>Created by Yusuke Kimura.</TextMotion>
+
+          <ParallaxTest />
+          <WideMotion />
+        </Flex>
+        <ContentsBox />
+      </SBox>
     </>
   );
 });
+const SBox = styled(motion.div)`
+  height: 5000px;
+`;
+const BGBox = styled(motion.div)`
+  background-image: url("../../assets/image/top_bg.jpg");
+  width: 1000px;
+  height: 1000px;
+`;

@@ -6,6 +6,8 @@ import typescriptIcon from "./images/typescript.svg";
 import chakraIcon from "./images/chakra.webp";
 import motionIcon from "./images/motion.png";
 import treeBG from "./images/tree.png";
+import purpleBG from "./images/purple_circle.png";
+import sixBG from "./images/six_bg.png";
 import styled from "styled-components";
 import { TopPageMotionParents } from "../TopPageMotionParents";
 import { TopPageMotion } from "../TopPageMotion";
@@ -28,9 +30,9 @@ export const ParallaxTest = () => {
   return (
     <>
       <SFrame
-        top={notSmall[0] ? "560px" : "500px"}
+        top={notSmall[0] ? "540px" : "520px"}
         width="100%"
-        height="790px"
+        height="800px"
         overflow="hidden"
         background={null}
         center
@@ -51,21 +53,21 @@ export const ParallaxTest = () => {
           <TopPageMotion>
             <Frame
               opacity={0.1}
-              scale={1}
+              scale={0.7}
               center="x"
-              top={-250}
+              top={-220}
               left="50%"
               width="1200px"
               height="1200px"
               background={null}
               animate={bgAnim}
-              image={treeBG}
+              image={sixBG}
               whileHover={{ opacity: 1 }}
             />
           </TopPageMotion>
           <TopPageMotion>
             <Frame
-              scale={notSmall[0] ? 0.5 : 0.3}
+              scale={notSmall[0] ? 0.45 : 0.3}
               center="x"
               top={notSmall[0] ? 50 : 100}
               left="50%"
