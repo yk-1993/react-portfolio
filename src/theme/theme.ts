@@ -11,7 +11,7 @@ const theme = extendTheme({
   },
   fonts: {
     heading: "Futura,KosugiMaru",
-    body: "KosugiMaru",
+    body: "Futura,KosugiMaru",
   },
 });
 
