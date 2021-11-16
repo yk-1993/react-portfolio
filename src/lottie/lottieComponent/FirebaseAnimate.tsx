@@ -1,17 +1,16 @@
-import animationData from "../phone.json";
+import animationData from "../firebase.json";
 import Lottie from "react-lottie";
 import { useCallback, useEffect, useRef, useState } from "react";
-
 const defaultOptions = {
-  loop: false,
-  autoplay: false,
+  loop: true,
+  autoplay: true,
   animationData: animationData,
   rendererSettings: {
     preserveAspectRatio: "xMidYMid slice",
   },
 };
 
-export const PhoneAnimate = () => {
+export const FirebaseAnimate = () => {
   const [isDisplay, setIsDisplay] = useState(true);
 
   const isRunning = useRef(false); // スクロール多発防止用フラグ
@@ -22,7 +21,7 @@ export const PhoneAnimate = () => {
     isRunning.current = true;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     requestAnimationFrame(() => {
-      if (scrollTop > 2300) {
+      if (scrollTop > 200) {
         setIsDisplay(false);
       } else {
         setIsDisplay(true);

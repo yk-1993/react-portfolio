@@ -12,6 +12,7 @@ export const Footer: VFC = memo(() => {
         padding={{ base: "3", md: "5" }}
         height="10vh"
         alignItems="center"
+        borderTop="1px solid #222"
       >
         <Heading as="h2" fontSize={{ base: "sm", md: "md" }}>
           Created by Yusuke Kimura 2021

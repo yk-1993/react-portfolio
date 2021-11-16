@@ -4,6 +4,7 @@ import {
   DrawerContent,
   DrawerOverlay,
   Button,
+  Flex,
 } from "@chakra-ui/react";
 import { memo, VFC } from "react";
 import { LogoutBtn } from "./button/LogoutBtn";
@@ -27,13 +28,35 @@ export const MenuDrawer: VFC<Props> = memo((props) => {
     <Drawer placement="left" size="xs" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay>
         <DrawerContent>
-          <DrawerBody p={0} bg="white">
-            <Button w={"100%"} onClick={onClickHome} borderRadius={0}>
+          <DrawerBody
+            p={0}
+            bg="white"
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+          >
+            <Button
+              w={"100%"}
+              onClick={onClickHome}
+              borderRadius={0}
+              backgroundColor="#fff"
+              _hover={{
+                borderBottom: "1px solid #222",
+              }}
+            >
               TOP
             </Button>
             {/** ログイン状態によってボタンの出し分け制御 */}
             {userState ? <LogoutBtn /> : <LoginBtn />}
-            <Button w={"100%"} onClick={onClickSignUp} borderRadius={0}>
+            <Button
+              w={"100%"}
+              backgroundColor="#fff"
+              onClick={onClickSignUp}
+              borderRadius={0}
+              _hover={{
+                borderBottom: "1px solid #222",
+              }}
+            >
               新規登録
             </Button>
           </DrawerBody>

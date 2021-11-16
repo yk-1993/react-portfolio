@@ -126,7 +126,7 @@ export const SignUp: VFC = memo(() => {
       .createUserWithEmailAndPassword(emailIns, password)
       .then(() => {
         showMessage({ title: "登録に成功しました", status: "success" });
-        history.push("/");
+        history.push("/home");
       })
       .catch((error) => {
         // Firebase側でのバリデーションチェックとエラーハンドリング

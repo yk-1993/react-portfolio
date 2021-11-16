@@ -9,11 +9,15 @@ export const LoginBtn: VFC = memo(() => {
   };
   return (
     <Button
-      backgroundColor={{ md: "white", sm: "gray.100" }}
+      backgroundColor="#fff"
       onClick={login}
       fontSize="sm"
-      w={{ md: "auto", sm: "100%" }}
-      border="2px solid white"
+      w="100%"
+      borderRadius="0"
+      boxSizing="border-box"
+      _hover={{
+        borderBottom: "1px solid #222",
+      }}
     >
       ログイン
     </Button>

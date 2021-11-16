@@ -5,13 +5,18 @@ import { Redirect } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import { UserInfoProvider } from "../../providers/UserInfoProvider";
+import { useHistory } from "react-router";
 
 export const Home: VFC = memo(() => {
   const userState = useRecoilValue(authState);
   const user = useRecoilValue(UserInfoProvider);
+  const history = useHistory();
   const onClickInfo = () => {
     console.log(user);
     console.log(userState?.uid);
+  };
+  const redirect = () => {
+    history.push("/login");
   };
 
   return (
@@ -30,7 +35,7 @@ export const Home: VFC = memo(() => {
           </Button>
         </Box>
       ) : (
-        <Redirect to="/login" />
+        redirect()
       )}
     </>
   );

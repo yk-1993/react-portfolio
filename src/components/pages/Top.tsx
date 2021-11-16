@@ -10,8 +10,16 @@ export const Top: VFC = memo(() => {
   const { scrollYProgress } = useViewportScroll();
   const backgroundColor = useTransform(
     scrollYProgress,
-    [0.1, 0.3, 0.45, 0.5],
-    ["rgba(0, 0, 0, 0);", "#FF0080", "#7928CA", "#81E6D9"]
+    [0.1, 0.4, 0.5, 0.6, 0.7, 0.8, 1],
+    [
+      "rgba(0, 0, 0, 0);",
+      "#7928CA",
+      "#7928CA",
+      "#FF0080",
+      "#81E6D9",
+      "#81E6D9",
+      "#fff",
+    ]
   );
   return (
     <>
@@ -30,5 +38,6 @@ export const Top: VFC = memo(() => {
   );
 });
 const SBox = styled(motion.div)`
-  height: 5000px;
+  height: auto;
+  padding-bottom: 50px;
 `;

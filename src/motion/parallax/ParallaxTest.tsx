@@ -76,8 +76,6 @@ export const ParallaxTest = () => {
               background={null}
               animate={reactAnim}
               image={reactIcon}
-              whileHover={{ scale: 0.65, rotate: 5 }}
-              whileTap={{ scale: 0.5 }}
             />
           </TopPageMotion>
           <TopPageMotion>
@@ -88,11 +86,9 @@ export const ParallaxTest = () => {
               center="x"
               background={null}
               animate={fbAnim}
-              width="1600px"
-              height="800px"
+              width="1172px"
+              height="576px"
               image={firebaseIcon}
-              whileHover={{ scale: 0.6, rotate: 5 }}
-              whileTap={{ scale: 0.4 }}
             />
           </TopPageMotion>
           <TopPageMotion>
@@ -106,8 +102,6 @@ export const ParallaxTest = () => {
               width="500px"
               height="500px"
               image={typescriptIcon}
-              whileHover={{ scale: 0.4, rotate: 5 }}
-              whileTap={{ scale: 0.3 }}
             />
           </TopPageMotion>
           <TopPageMotion>
@@ -121,8 +115,6 @@ export const ParallaxTest = () => {
               background={null}
               animate={ionicAnim}
               image={ionicIcon}
-              whileHover={{ scale: 0.5, rotate: 5 }}
-              whileTap={{ scale: 0.3 }}
             />
           </TopPageMotion>
           <TopPageMotion>
@@ -136,8 +128,6 @@ export const ParallaxTest = () => {
               background={null}
               animate={chakraAnim}
               image={chakraIcon}
-              whileHover={{ scale: 0.4, rotate: 5 }}
-              whileTap={{ scale: 0.3 }}
             />
           </TopPageMotion>
 
@@ -152,8 +142,6 @@ export const ParallaxTest = () => {
               background={null}
               animate={motionAnim}
               image={motionIcon}
-              whileHover={{ scale: 0.4, rotate: 5 }}
-              whileTap={{ scale: 0.3 }}
             />
           </TopPageMotion>
         </TopPageMotionParents>

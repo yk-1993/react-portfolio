@@ -35,6 +35,10 @@ export const Header: VFC = memo(() => {
         justify="space-between"
         padding={{ base: "3", md: "5" }}
         height="15vh"
+        borderBottom="1px solid #222"
+        // position="fixed"
+        // width="100%"
+        // zIndex="100"
       >
         <Flex
           align="center"
@@ -45,14 +49,14 @@ export const Header: VFC = memo(() => {
         >
           <ScrollMotion>
             <Heading as="h1" fontSize={{ base: "md", md: "lg" }}>
-              ＊ Yusuke Kimura
+              TOP
             </Heading>
           </ScrollMotion>
         </Flex>
         <Flex
           align="center"
           fontSize="sm"
-          flexGrow={2}
+          flexGrow={1}
           display={{ base: "none", md: "flex" }}
         >
           <Box pr={4}>
