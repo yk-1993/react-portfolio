@@ -13,6 +13,8 @@ import {
   UserInfoAddress2,
   UserInfoAddress3,
 } from "../providers/UserInfoProvider";
+import { useDispatch } from "react-redux";
+import store from "..";
 
 export const UseRegister = () => {
   // フロント側画面間連携情報ユーザー用、一時保存用のグローバルステートを定義
@@ -30,17 +32,30 @@ export const UseRegister = () => {
   // フロント側画面間連携情報ユーザー用のグローバルステートを定義
   const setUser = useSetRecoilState(UserInfoProvider);
 
+  const dispatch = useDispatch();
+
   const setRegisterUser = useCallback(() => {
-    console.log("一時保存用のユーザ情報を本登録:");
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(phone);
-    console.log(birthDate);
-    console.log(prefecture);
-    console.log(postalcode);
-    console.log(address1);
-    // 一時保存用のユーザ情報を本登録
+    // Redux
+    dispatch({
+      type: "REGISTER_USER",
+      user: {
+        uid: "",
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        birthDate: birthDate,
+        address: {
+          postalcode: postalcode,
+          prefecture: prefecture,
+          address1: address1,
+          address2: address2,
+          address3: address3,
+        },
+      },
+    });
+
+    // Recoil
     setUser({
       uid: "",
       firstName: firstName,

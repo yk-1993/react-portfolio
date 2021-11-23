@@ -9,8 +9,8 @@ import { MenuDrawer } from "../../molecules/MenuDrawer";
 import { LogoutBtn } from "../../molecules/button/LogoutBtn";
 import { LoginBtn } from "../../molecules/button/LoginBtn";
 import { ScrollMotion } from "../../../motion/ScrollMotion";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { UserState } from "../../../store/store";
 export const Header: VFC = memo(() => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const history = useHistory();
@@ -24,10 +24,10 @@ export const Header: VFC = memo(() => {
     [history]
   );
   const userState = useRecoilValue(authState);
-  const count = useSelector((state: RootState) => state.count);
-  const posts = useSelector((state: RootState) => state.posts);
 
   const onClickSignUp = useCallback(() => history.push("/signup"), [history]);
+  const onClickMypage = useCallback(() => history.push("/home"), [history]);
+
   return (
     <>
       <Flex
@@ -82,11 +82,13 @@ export const Header: VFC = memo(() => {
               </ScrollMotion>
             )}
           </Box>
-          <div>
-            {posts.map((post) => (
-              <p key={post.id}>{post.title}</p>
-            ))}
-          </div>
+          <Box pr={4}>
+            {userState?.uid && (
+              <ScrollMotion>
+                <Link onClick={onClickMypage}>HOME</Link>
+              </ScrollMotion>
+            )}
+          </Box>
           {/* <Box pr={4}>
             <Link onClick={onClickUserManagement}>ユーザー一覧</Link>
           </Box>

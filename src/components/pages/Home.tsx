@@ -6,14 +6,18 @@ import { useRecoilValue } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import { UserInfoProvider } from "../../providers/UserInfoProvider";
 import { useHistory } from "react-router";
+import store from "../../index";
 
 export const Home: VFC = memo(() => {
   const userState = useRecoilValue(authState);
   const user = useRecoilValue(UserInfoProvider);
   const history = useHistory();
   const onClickInfo = () => {
+    console.log("Recoil:");
     console.log(user);
     console.log(userState?.uid);
+    console.log(`Redux:`);
+    console.log(store.getState());
   };
   const redirect = () => {
     history.push("/login");

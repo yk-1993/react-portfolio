@@ -4,7 +4,7 @@ import theme from "./theme/theme";
 import { Router } from "./router/Router";
 import { RecoilRoot } from "recoil";
 import { Provider } from "react-redux";
-import store from "./store/index";
+import store from "./index";
 
 export default function App() {
   return (
