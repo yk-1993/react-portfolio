@@ -1,5 +1,6 @@
 import { Button } from "@chakra-ui/button";
 import { memo, VFC } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { useSetRecoilState } from "recoil";
 import { auth } from "../../../firebase";
@@ -10,12 +11,18 @@ export const LogoutBtn: VFC = memo(() => {
   const history = useHistory();
   const { showMessage } = useMessage();
   const setUserState = useSetRecoilState(authState);
+  const dispatch = useDispatch();
 
   const logout = () => {
     // Firebase側の認証からサインアウト
     auth.signOut();
     // フロント側で保持しているユーザ情報を初期化
+    // Recoil
     setUserState(null);
+    // Redux
+    dispatch({
+      type: "DELETE_USER",
+    });
     // ログアウト後はログイン画面に遷移
     history.push("/login");
     showMessage({ title: "ログアウトしました", status: "info" });

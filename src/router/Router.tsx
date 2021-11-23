@@ -10,13 +10,17 @@ import { Home } from "../components/pages/Home";
 import { Top } from "../components/pages/Top";
 import { NormalLayout } from "../components/templates/NormalLayout";
 import { UserInfoProvider } from "../providers/UserInfoProvider";
+import { useSelector } from "react-redux";
+import { UserState } from "../store/store";
+import { Spinner } from "@chakra-ui/spinner";
+import { Box, Flex, Text } from "@chakra-ui/layout";
 
 export const Router: VFC = memo(() => {
   const setAuth = useSetRecoilState(authState);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // フロント側画面間連携情報ユーザー用のグローバルステートを定義
-  const [user] = useRecoilState(UserInfoProvider);
+  // Reduxでステート取得
+  const user = useSelector((state: UserState) => state);
 
   useEffect(() => {
     // ログイン状態を監視
@@ -31,7 +35,7 @@ export const Router: VFC = memo(() => {
           .get();
         // Firestore にユーザー用のドキュメントが存在しなければ作成
         if (!userDoc.exists) {
-          // フロント側に一時保存してあるユーザ情報をFireStoreに登録
+          // Reduxでフロント側に一時保存してあるユーザ情報をFireStoreに登録
           await userDoc.ref.set({
             uid: authUser.uid,
             firstName: user.firstName,
@@ -61,7 +65,22 @@ export const Router: VFC = memo(() => {
   return (
     <>
       {isLoading ? (
-        <p>Loading...</p>
+        <Flex m="auto" height="100vh" width="100%" alignItems="center">
+          <Box alignSelf="center" m="auto">
+            <Text>Now Loading...</Text>
+            <Spinner
+              position="absolute"
+              thickness="15px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="teal.200"
+              width="15rem"
+              height="15rem"
+              marginTop="-130px"
+              marginLeft="-60px"
+            />
+          </Box>
+        </Flex>
       ) : (
         <Switch>
           <Route exact path="/">
