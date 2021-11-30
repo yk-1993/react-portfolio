@@ -8,7 +8,7 @@ import {
   StackDivider,
   Text,
 } from "@chakra-ui/layout";
-import { memo, useEffect, useState, VFC } from "react";
+import { memo, useEffect, VFC } from "react";
 import { useRecoilValue } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import { useHistory } from "react-router";
@@ -17,6 +17,18 @@ import firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "../../store/store";
 import { UserInfoBadge } from "../molecules/user/UserInfoBadge";
+import { useDisclosure } from "@chakra-ui/hooks";
+import {
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/modal";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input } from "@chakra-ui/input";
 
 export const Home: VFC = memo(() => {
   const userState = useRecoilValue(authState);
@@ -28,9 +40,14 @@ export const Home: VFC = memo(() => {
   const redirect = () => {
     history.push("/login");
   };
+  // Redux dispatchを定義
   const dispatch = useDispatch();
 
+  // Reduxからステートを取得
   const userInfo = useSelector((state: UserState) => state);
+
+  // モーダル用のディスクロージャを定義
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const db = firebase.firestore();
@@ -137,7 +154,7 @@ export const Home: VFC = memo(() => {
                 bgColor="white"
                 color="teal.500"
                 _hover={{ opacity: "0.5" }}
-                onClick={onClickInfo}
+                onClick={onOpen}
                 float="right"
               >
                 登録情報変更
@@ -165,6 +182,31 @@ export const Home: VFC = memo(() => {
       ) : (
         redirect()
       )}
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>登録情報変更</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>First name</FormLabel>
+              <Input placeholder="First name" />
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Last name</FormLabel>
+              <Input placeholder="Last name" />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="teal" mr={3}>
+              変更
+            </Button>
+            <Button onClick={onClose}>キャンセル</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 });
