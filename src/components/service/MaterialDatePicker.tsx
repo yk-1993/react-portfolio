@@ -1,17 +1,23 @@
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker } from "@material-ui/pickers";
-import { useEffect, useState } from "react";
+import { useEffect, useState, VFC } from "react";
 import jaLocale from "date-fns/locale/ja";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { UseSetInput } from "../../hooks/useSetInput";
+import { User } from "../../types/user";
+import { useDispatch, useSelector } from "react-redux";
 
+type Props = {
+  userDate?: Date | null;
+};
 // 生年月日 カレンダー (Material UI)
-export const MaterialDatePicker = () => {
+export const MaterialDatePicker: VFC<Props> = (props) => {
   // 初期値はDate型のuseStateで作成
   const [date, setDate] = useState<Date | null>(null);
   const { setInputField } = UseSetInput();
-
+  const dateState = useSelector((state: User) => state.birthDate);
+  const dispatch = useDispatch();
   // 日付変更時に処理
   const onChange = (date) => {
     // カレンダーの値を更新
@@ -29,7 +35,8 @@ export const MaterialDatePicker = () => {
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={jaLocale}>
       <DatePicker
         emptyLabel="選択してください"
-        value={date}
+        initialFocusedDate={dateState}
+        value={date || dateState}
         onChange={onChange}
         format="yyyy年 MM月 dd日"
         animateYearScrolling
