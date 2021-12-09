@@ -47,3 +47,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.MuiDialog-root {
+  z-index: 1450 !important;
+}
