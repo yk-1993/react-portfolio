@@ -120,6 +120,22 @@ export const Home: VFC = memo(() => {
 
   const userChangeInfo = useSelector((state: User) => state);
 
+  const setPostCodeAwait = async () => {
+    setPostcode(userInfo.address.postalcode);
+    setPostalcodeGlobal(userInfo.address.postalcode);
+    return true;
+  };
+  // モーダルが開いたときの処理
+  useEffect(() => {
+    (async () => {
+      const pCode = userInfo.address.postalcode;
+      if (pCode) {
+        await setPostCodeAwait();
+        getAddress(pCode);
+      }
+    })();
+  }, [isOpen]);
+
   useEffect(() => {
     const db = firebase.firestore();
     // collection 'recipes' を参照
@@ -144,11 +160,11 @@ export const Home: VFC = memo(() => {
               phone: dataValue.phone,
               birthDate: dataValue.birthDate,
               address: {
-                postalcode: dataValue.address.postalcode,
-                prefecture: dataValue.address.prefecture,
-                address1: dataValue.address.address1,
-                address2: dataValue.address.address2,
-                address3: dataValue.address.address3,
+                postalcode: dataValue.address?.postalcode,
+                prefecture: dataValue.address?.prefecture,
+                address1: dataValue.address?.address1,
+                address2: dataValue.address?.address2,
+                address3: dataValue.address?.address3,
               },
             },
           });
@@ -203,14 +219,36 @@ export const Home: VFC = memo(() => {
                       <UserInfoBadge userInfo={userInfo.phone}>
                         電話番号
                       </UserInfoBadge>
-                      <UserInfoBadge userInfo={userInfo.address?.postalcode}>
+                      <UserInfoBadge
+                        userInfo={
+                          userInfo.address.postalcode
+                            ? userInfo.address.postalcode
+                            : "-"
+                        }
+                      >
                         郵便番号
                       </UserInfoBadge>
                       <UserInfoBadge
-                        userInfo={`${userInfo.address?.prefecture}
-                         ${userInfo.address?.address1} 
-                         ${userInfo.address?.address2} 
-                         ${userInfo.address?.address3}`}
+                        userInfo={`${
+                          userInfo.address.prefecture
+                            ? userInfo.address.prefecture
+                            : "-"
+                        }
+                         ${
+                           userInfo.address.address1
+                             ? userInfo.address.address1
+                             : "-"
+                         } 
+                         ${
+                           userInfo.address.address2
+                             ? userInfo.address.address2
+                             : "-"
+                         } 
+                         ${
+                           userInfo.address.address3
+                             ? userInfo.address.address3
+                             : "-"
+                         }`}
                       >
                         住所
                       </UserInfoBadge>
@@ -317,6 +355,7 @@ export const Home: VFC = memo(() => {
                     placeholder="example@gmail.com"
                     leftIcon={<EmailIcon color="gray.300" />}
                     inputType="email"
+                    value={userChangeInfo.email}
                   />
                 </DelayMotionChild>
                 <DelayMotionChild>
@@ -326,6 +365,7 @@ export const Home: VFC = memo(() => {
                     isRequiredFlag={false}
                     placeholder="例：09012345678"
                     inputType="phone"
+                    value={userChangeInfo.phone}
                     leftIcon={<PhoneIcon color="gray.300" />}
                   />
 
@@ -354,6 +394,7 @@ export const Home: VFC = memo(() => {
                           placeholder="郵便番号を入力"
                           onChange={onChangePostcode}
                           onBlur={() => getAddress(postcode)}
+                          defaultValue={userChangeInfo.address.postalcode}
                         />
                         <InputRightElement width="4rem">
                           <Button
