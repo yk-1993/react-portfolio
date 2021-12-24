@@ -24,6 +24,15 @@ export const UseValidation = () => {
   const [errMessagePost, setErrMessagePost] = useState<string>("");
   const [errMessageAddress, setErrMessageAddress] = useState<string>("");
 
+  // エラーメッセージリセット
+  const initErrMsg = () => {
+    setErrMessageFirstName("");
+    setErrMessageLastName("");
+    setErrMessagePhone("");
+    setErrMessageBirthDate("");
+    setErrMessagePost("");
+  };
+
   // フロント側画面間連携情報用グローバルステート
   const phone = useRecoilValue(UserInfoPhone);
   const firstName = useRecoilValue(UserInfoFirstName);
@@ -32,51 +41,112 @@ export const UseValidation = () => {
   const postalcode = useRecoilValue(UserInfoPostalcode);
   const address = useRecoilValue(UserInfoAddress1);
 
-  const checkFirstNameValid = (): boolean => {
+  const checkFirstNameValid = (register: boolean): boolean => {
     // 必須項目チェック 名字
-    if (firstName) {
-      setErrMessageFirstName("");
-      return true;
+    if (register) {
+      if (firstName) {
+        setErrMessageFirstName("");
+        return true;
+      } else {
+        setErrMessageFirstName("名字を入力してください");
+        return false;
+      }
     } else {
-      setErrMessageFirstName("名字を入力してください");
-      return false;
+      if (firstName === "") {
+        setErrMessageFirstName("名字を入力してください");
+        return false;
+      } else if (firstName === null) {
+        setErrMessageFirstName("");
+        return true;
+      } else {
+        setErrMessageFirstName("");
+        return true;
+      }
     }
   };
-  const checkLastNameValid = (): boolean => {
+  const checkLastNameValid = (register: boolean): boolean => {
     // 必須項目チェック 名前
-    if (lastName) {
-      setErrMessageLastName("");
-      return true;
+    if (register) {
+      if (lastName) {
+        setErrMessageLastName("");
+        return true;
+      } else {
+        setErrMessageLastName("名前を入力してください");
+        return false;
+      }
     } else {
-      setErrMessageLastName("名前を入力してください");
-      return false;
+      if (lastName === "") {
+        setErrMessageLastName("名前を入力してください");
+        return false;
+      } else if (lastName === null) {
+        setErrMessageLastName("");
+        return true;
+      } else {
+        setErrMessageLastName("");
+        return true;
+      }
     }
   };
 
-  const checkBirthDateValid = (): boolean => {
+  const checkBirthDateValid = (register: boolean): boolean => {
     // 必須項目チェック 生年月日
-    if (birthDate) {
-      setErrMessageBirthDate("");
-      return true;
+    if (register) {
+      if (birthDate) {
+        setErrMessageBirthDate("");
+        return true;
+      } else {
+        setErrMessageBirthDate("生年月日を選択してください");
+        return false;
+      }
     } else {
-      setErrMessageBirthDate("生年月日を選択してください");
-      return false;
+      if (birthDate === "") {
+        setErrMessageBirthDate("生年月日を選択してください");
+        return false;
+      } else if (birthDate === null) {
+        setErrMessageBirthDate("");
+        return true;
+      } else {
+        setErrMessageBirthDate("");
+        return true;
+      }
     }
   };
-  const checkPhoneValidation = (): boolean => {
+  const checkPhoneValidation = (register: boolean): boolean => {
     // 電話番号バリデーション
     // 電話番号の入力が無い場合はチェックしない
-    if (!phone || phone === "") {
+    if (!phone || phone === null) {
       setErrMessagePhone("");
       return true;
     }
-    // 正規表現で桁数簡易チェック
-    if (phone.match(/^(0{1}\d{9,10})$/)) {
-      setErrMessagePhone("");
-      return true;
+    // 登録画面からのチェック
+    if (register) {
+      // 正規表現で桁数簡易チェック
+      if (phone.match(/^(0{1}\d{9,10})$/)) {
+        setErrMessagePhone("");
+        return true;
+      } else {
+        setErrMessagePhone("正しい電話番号を入力してください");
+        return false;
+      }
     } else {
-      setErrMessagePhone("正しい電話番号を入力してください");
-      return false;
+      // 登録情報修正画面からのチェック
+      // ユーザーが電話番号を削除した場合
+      if (phone === "") {
+        setErrMessageBirthDate("");
+        return true;
+      } else if (phone === null) {
+        setErrMessageBirthDate("");
+        return true;
+      } else {
+        // 正規表現で桁数簡易チェック
+        if (phone.match(/^(0{1}\d{9,10})$/)) {
+          setErrMessagePhone("");
+          return true;
+        } else {
+          setErrMessagePhone("正しい電話番号を入力してください");
+          return false;
+        }
+      }
     }
   };
   const checkPwValidation = useCallback((props: Props): boolean => {
@@ -90,9 +160,9 @@ export const UseValidation = () => {
       return false;
     }
   }, []);
-  const checkPostalcodeValid = (): boolean => {
+  const checkPostalcodeValid = (register: boolean): boolean => {
     // 必須項目チェック 郵便番号（住所は自動入力）
-    if (postalcode.match(/^[0-9]{7}$/)) {
+    if (postalcode?.match(/^[0-9]{7}$/)) {
       setErrMessagePost("");
       return true;
     } else {
@@ -100,7 +170,7 @@ export const UseValidation = () => {
       return false;
     }
   };
-  const checkAddressValid = (): boolean => {
+  const checkAddressValid = (register: boolean): boolean => {
     // 必須項目チェック 郵便番号（住所は自動入力）
     if (address) {
       setErrMessageAddress("");
@@ -118,6 +188,7 @@ export const UseValidation = () => {
     checkBirthDateValid,
     checkPostalcodeValid,
     checkAddressValid,
+    initErrMsg,
     errMessageFirstName,
     errMessageLastName,
     errMessagePw,

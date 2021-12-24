@@ -53,7 +53,7 @@ export const SignUp: VFC = memo(() => {
   const { getAddress } = usePostalCodeGetAddress();
 
   // メールアドレス認証用グローバルステート
-  const [emailIns] = useRecoilState(UserInfoEmail);
+  const [emailIns] = useRecoilState<string | null>(UserInfoEmail);
 
   // 郵便番号検索後、フォームにセットするためのステート定義
   const prefecture = useRecoilValue(UserInfoPrefecture);
@@ -91,22 +91,22 @@ export const SignUp: VFC = memo(() => {
      */
 
     // 名字
-    const validResultFirstname: boolean = checkFirstNameValid();
+    const validResultFirstname: boolean = checkFirstNameValid(true);
     // 名前
-    const validResultLastName: boolean = checkLastNameValid();
+    const validResultLastName: boolean = checkLastNameValid(true);
     // 生年月日
-    const validResultBirthDate: boolean = checkBirthDateValid();
+    const validResultBirthDate: boolean = checkBirthDateValid(true);
     // パスワード
     const validResultPw: boolean = checkPwValidation({
       password: password,
       rePassword: rePassword,
     });
     // 電話番号
-    const validResultPhone: boolean = checkPhoneValidation();
+    const validResultPhone: boolean = checkPhoneValidation(true);
     // 郵便番号（数字と桁数チェック。実際に存在するかどうかは外部APIコール部分で判定）
-    const validResultPost: boolean = checkPostalcodeValid();
+    const validResultPost: boolean = checkPostalcodeValid(true);
     // 住所（郵便番号検索語、自動入力）
-    const validResultAddress: boolean = checkAddressValid();
+    const validResultAddress: boolean = checkAddressValid(true);
     // バリデーションエラーの場合は登録処理しない
     if (
       !validResultPw ||
@@ -119,9 +119,11 @@ export const SignUp: VFC = memo(() => {
     ) {
       return;
     }
+    if (!emailIns) {
+      return;
+    }
 
     // emailとpasswordをFirebase Authenticationに送信、登録
-
     auth
       .createUserWithEmailAndPassword(emailIns, password)
       .then(() => {
@@ -351,7 +353,7 @@ export const SignUp: VFC = memo(() => {
                 <InputGroup size="md">
                   <Input
                     placeholder="例：東京都"
-                    value={prefecture}
+                    value={prefecture ? prefecture : "-"}
                     variant="filled"
                   />
                 </InputGroup>
@@ -364,7 +366,7 @@ export const SignUp: VFC = memo(() => {
                 <InputGroup size="md">
                   <Input
                     placeholder="例：千代田区"
-                    value={address1}
+                    value={address1 ? address1 : "-"}
                     variant="filled"
                   />
                 </InputGroup>
@@ -379,7 +381,7 @@ export const SignUp: VFC = memo(() => {
                     <InputGroup size="md">
                       <Input
                         placeholder="例：千代田"
-                        value={address2}
+                        value={address2 ? address2 : "-"}
                         variant="filled"
                         onFocus={() => {
                           console.log("郵便番号を入力してください");

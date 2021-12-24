@@ -11,11 +11,19 @@ type Props = {
   leftIcon: ReactNode;
   inputType: string;
   value?: string;
+  disabled?: boolean;
 };
 
 export const IconForm: VFC<Props> = memo((props) => {
-  const { formLabel, isRequiredFlag, placeholder, leftIcon, inputType, value } =
-    props;
+  const {
+    formLabel,
+    isRequiredFlag,
+    placeholder,
+    leftIcon,
+    inputType,
+    value,
+    disabled,
+  } = props;
 
   // フロント側画面間連携情報ユーザー用グローバルステート
   const [user] = useRecoilState(UserInfoProvider);
@@ -43,6 +51,7 @@ export const IconForm: VFC<Props> = memo((props) => {
               placeholder={placeholder}
               onChange={onChangeInput}
               defaultValue={value}
+              disabled={disabled}
             />
           </InputGroup>
         </FormControl>
@@ -58,6 +67,7 @@ export const IconForm: VFC<Props> = memo((props) => {
               placeholder={placeholder}
               onChange={onChangeInput}
               defaultValue={value}
+              disabled={disabled}
             />
           </InputGroup>
         </FormControl>

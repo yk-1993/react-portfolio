@@ -43,17 +43,23 @@ import { MaterialDatePicker } from "../service/MaterialDatePicker";
 import { IconForm } from "../molecules/form/IconForm";
 import { EmailIcon, PhoneIcon, SearchIcon } from "@chakra-ui/icons";
 import { UseValidation } from "../../hooks/useValidation";
-import { UseRegister } from "../../hooks/useRegister";
 import {
   UserInfoAddress1,
   UserInfoAddress2,
+  UserInfoAddress3,
+  UserInfoBirthDate,
   UserInfoEmail,
+  UserInfoFirstName,
+  UserInfoLastName,
+  UserInfoPhone,
   UserInfoPostalcode,
   UserInfoPrefecture,
+  UserInfoProvider,
 } from "../../providers/UserInfoProvider";
 import { usePostalCodeGetAddress } from "../../hooks/usePostalcodeGetAddress";
 import { useMessage } from "../../hooks/useMessage";
 import { User } from "../../types/user";
+import { UseRegister } from "../../hooks/useRegister";
 
 export const Home: VFC = memo(() => {
   const userState = useRecoilValue(authState);
@@ -63,14 +69,41 @@ export const Home: VFC = memo(() => {
     console.log(store.getState());
   };
   const redirect = () => {
-    history.push("/login");
+    history.push("/");
   };
+
+  // Modal起動
+  const onModal = () => {
+    setFisrtName(userChangeInfo.firstName);
+    setLastName(userChangeInfo.lastName);
+    setTmpPrefecture(userChangeInfo.address.prefecture);
+    setTmpPostalcode(userChangeInfo.address.postalcode);
+    setTmpAddress1(userChangeInfo.address.address1);
+    setTmpAddress2(userChangeInfo.address.address2);
+    setTmpAddress3(
+      userChangeInfo.address.address3 ? userChangeInfo.address.address3 : "-"
+    );
+    initErrMsg();
+    onOpen();
+  };
+
+  // フロント側画面間連携情報ユーザー用、一時保存用のグローバルステートを定義
+  const [firstName, setFisrtName] = useRecoilState(UserInfoFirstName);
+  const [lastName, setLastName] = useRecoilState(UserInfoLastName);
+  const [phone, setPhone] = useRecoilState(UserInfoPhone);
+  const [birthDate, setBirthDate] = useRecoilState(UserInfoBirthDate);
+  const [tmpPrefecture, setTmpPrefecture] = useRecoilState(UserInfoPrefecture);
+  const [tmpPostalcode, setTmpPostalcode] = useRecoilState(UserInfoPostalcode);
+  const [tmpAddress1, setTmpAddress1] = useRecoilState(UserInfoAddress1);
+  const [tmpAddress2, setTmpAddress2] = useRecoilState(UserInfoAddress2);
+  const [tmpAddress3, setTmpAddress3] = useRecoilState(UserInfoAddress3);
+
   // Redux dispatchを定義
   const dispatch = useDispatch();
 
   // Reduxからステートを取得
   const userInfo = useSelector((state: UserState) => state);
-
+  const userChangeInfo = useSelector((state: User) => state);
   // モーダル用のディスクロージャを定義
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -78,6 +111,7 @@ export const Home: VFC = memo(() => {
   const { setRegisterUser } = UseRegister();
   // メッセージトースト
   const { showMessage } = useMessage();
+
   // 郵便番号検索API
   const { getAddress } = usePostalCodeGetAddress();
 
@@ -97,6 +131,7 @@ export const Home: VFC = memo(() => {
     checkBirthDateValid,
     checkPostalcodeValid,
     checkAddressValid,
+    initErrMsg,
     errMessageFirstName,
     errMessageLastName,
     errMessagePhone,
@@ -104,7 +139,7 @@ export const Home: VFC = memo(() => {
     errMessagePost,
     errMessageAddress,
   } = UseValidation();
-
+  const setUser = useSetRecoilState(UserInfoProvider);
   // Firebase 認証エラーメッセージ用 useState
   const [errMessage, setErrMessage] = useState<string>("");
   // 入力された郵便番号をuseStateにセット
@@ -112,13 +147,75 @@ export const Home: VFC = memo(() => {
     setPostcode(e.target.value);
     setPostalcodeGlobal(e.target.value);
   };
+  useEffect(() => {
+    (async () => {
+      setUser(null);
+    })();
+  }, []);
 
   //登録ボタン押下
-  const onRegister = () => {};
+  const onRegister = async () => {
+    //
+    /* フロント側でのバリデーションチェック
+     */
+
+    // 名字
+    const validResultFirstname: boolean = checkFirstNameValid(false);
+    // 名前
+    const validResultLastName: boolean = checkLastNameValid(false);
+    // 生年月日
+    const validResultBirthDate: boolean = checkBirthDateValid(false);
+
+    // 電話番号
+    const validResultPhone: boolean = checkPhoneValidation(false);
+    // 郵便番号（数字と桁数チェック。実際に存在するかどうかは外部APIコール部分で判定）
+    const validResultPost: boolean = checkPostalcodeValid(false);
+    // 住所（郵便番号検索語、自動入力）
+    const validResultAddress: boolean = checkAddressValid(false);
+    // バリデーションエラーの場合は登録処理しない
+    if (
+      !validResultPhone ||
+      !validResultFirstname ||
+      !validResultLastName ||
+      !validResultPost ||
+      !validResultAddress ||
+      !validResultBirthDate
+    ) {
+      return;
+    }
+    onClose();
+    const db = firebase.firestore();
+    // collection 'recipes' を参照
+    const myColRef = db
+      .collection("users")
+      .doc(userChangeInfo.uid ? userChangeInfo.uid : undefined);
+
+    // 各ユーザ情報項目がRecoilに値がある場合（ユーザが値を修正した場合）、その値をＤＢに登録。
+    // 値が無い場合（ユーザが未修正の場合）、未変更とみなしサーバから取得したReduxの情報をそのまま登録。
+    await myColRef.update({
+      uid: userChangeInfo.uid,
+      firstName: firstName ? firstName : userChangeInfo.firstName,
+      lastName: lastName ? lastName : userChangeInfo.lastName,
+      email: userChangeInfo.email,
+      phone: phone === "" ? phone : phone ? phone : userChangeInfo.phone,
+      birthDate: birthDate ? birthDate : userChangeInfo.birthDate,
+      address: {
+        postalcode: tmpPostalcode
+          ? tmpPostalcode
+          : userChangeInfo.address.postalcode,
+        prefecture: tmpPrefecture
+          ? tmpPrefecture
+          : userChangeInfo.address.prefecture,
+        address1: tmpAddress1 ? tmpAddress1 : userChangeInfo.address.address1,
+        address2: tmpAddress2 ? tmpAddress2 : userChangeInfo.address.address2,
+        address3: tmpAddress3 ? tmpAddress3 : userChangeInfo.address.address3,
+      },
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    showMessage({ title: "登録情報を変更しました", status: "success" });
+  };
 
   const [postcode, setPostcode] = useState<string>("");
-
-  const userChangeInfo = useSelector((state: User) => state);
 
   const setPostCodeAwait = async () => {
     setPostcode(userInfo.address.postalcode);
@@ -147,7 +244,6 @@ export const Home: VFC = memo(() => {
       snapshot.forEach((doc) => {
         dataValue = doc.data();
         if (dataValue.uid === userState?.uid) {
-          console.log("FireStoreから取得:");
           console.log(dataValue);
           // ReduxにFirebaseから取得した情報を格納
           dispatch({
@@ -263,23 +359,18 @@ export const Home: VFC = memo(() => {
                 bgColor="white"
                 color="teal.500"
                 _hover={{ opacity: "0.5" }}
-                onClick={onOpen}
+                onClick={onModal}
                 float="right"
               >
                 登録情報変更
               </Button>
             </GridItem>
-            <GridItem rowSpan={1} colSpan={{ base: 2, md: 1 }} p={10} bg="#FFF">
-              <Button
-                w="100%"
-                bgColor="teal.500"
-                color="white"
-                _hover={{ bgGradient: "linear(to-r,green.100,teal.200)" }}
-                onClick={onClickInfo}
-              >
-                Redux 保持情報取得
-              </Button>
-            </GridItem>
+            <GridItem
+              rowSpan={1}
+              colSpan={{ base: 2, md: 1 }}
+              p={10}
+              bg="#FFF"
+            ></GridItem>
             <GridItem
               rowSpan={1}
               colSpan={{ base: 2, md: 1 }}
@@ -307,7 +398,11 @@ export const Home: VFC = memo(() => {
                         formLabel="氏"
                         isRequiredFlag={true}
                         placeholder="例：鈴木"
-                        value={userChangeInfo.firstName}
+                        value={
+                          userChangeInfo.firstName
+                            ? userChangeInfo.firstName
+                            : undefined
+                        }
                         inputType="firstName"
                       />
                     </Box>
@@ -316,7 +411,11 @@ export const Home: VFC = memo(() => {
                         formLabel="名"
                         isRequiredFlag={true}
                         placeholder="例：太郎"
-                        value={userChangeInfo.lastName}
+                        value={
+                          userChangeInfo.lastName
+                            ? userChangeInfo.lastName
+                            : undefined
+                        }
                         inputType="lastName"
                       />
                     </Box>
@@ -351,11 +450,14 @@ export const Home: VFC = memo(() => {
                   {/**メールアドレス入力フォーム */}
                   <IconForm
                     formLabel="メールアドレス"
-                    isRequiredFlag={true}
+                    isRequiredFlag={false}
                     placeholder="example@gmail.com"
                     leftIcon={<EmailIcon color="gray.300" />}
                     inputType="email"
-                    value={userChangeInfo.email}
+                    value={
+                      userChangeInfo.email ? userChangeInfo.email : undefined
+                    }
+                    disabled={true}
                   />
                 </DelayMotionChild>
                 <DelayMotionChild>
@@ -365,7 +467,9 @@ export const Home: VFC = memo(() => {
                     isRequiredFlag={false}
                     placeholder="例：09012345678"
                     inputType="phone"
-                    value={userChangeInfo.phone}
+                    value={
+                      userChangeInfo.phone ? userChangeInfo.phone : undefined
+                    }
                     leftIcon={<PhoneIcon color="gray.300" />}
                   />
 
@@ -394,7 +498,11 @@ export const Home: VFC = memo(() => {
                           placeholder="郵便番号を入力"
                           onChange={onChangePostcode}
                           onBlur={() => getAddress(postcode)}
-                          defaultValue={userChangeInfo.address.postalcode}
+                          defaultValue={
+                            userChangeInfo.address.postalcode
+                              ? userChangeInfo.address.postalcode
+                              : undefined
+                          }
                         />
                         <InputRightElement width="4rem">
                           <Button
@@ -423,7 +531,7 @@ export const Home: VFC = memo(() => {
                     <InputGroup size="md">
                       <Input
                         placeholder="例：東京都"
-                        value={prefecture}
+                        value={prefecture ? prefecture : "-"}
                         variant="filled"
                       />
                     </InputGroup>
@@ -436,7 +544,7 @@ export const Home: VFC = memo(() => {
                     <InputGroup size="md">
                       <Input
                         placeholder="例：千代田区"
-                        value={address1}
+                        value={address1 ? address1 : "-"}
                         variant="filled"
                       />
                     </InputGroup>
@@ -451,7 +559,7 @@ export const Home: VFC = memo(() => {
                         <InputGroup size="md">
                           <Input
                             placeholder="例：千代田"
-                            value={address2}
+                            value={address2 ? address2 : "-"}
                             variant="filled"
                             onFocus={() => {
                               console.log("郵便番号を入力してください");
@@ -466,6 +574,11 @@ export const Home: VFC = memo(() => {
                         isRequiredFlag={false}
                         placeholder="例：千代田レジデンス201"
                         inputType="address3"
+                        value={
+                          userChangeInfo.address.address3
+                            ? userChangeInfo.address.address3
+                            : undefined
+                        }
                       />
                     </Box>
                   </Flex>
@@ -487,21 +600,15 @@ export const Home: VFC = memo(() => {
                   color="white"
                   _hober={{ opacity: 0.8 }}
                 >
-                  登録
+                  変更
                 </Button>
+                <Button onClick={onClose}>キャンセル</Button>
                 <Box fontSize="sm" color="red.400" fontWeight="bold">
                   {errMessage ?? { errMessage }}
                 </Box>
               </Stack>
             </DelayMotionModal>
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="teal" mr={3}>
-              変更
-            </Button>
-            <Button onClick={onClose}>キャンセル</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

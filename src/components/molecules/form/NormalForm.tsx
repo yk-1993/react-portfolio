@@ -37,7 +37,11 @@ export const NormalForm: VFC<Props> = memo((props) => {
         <FormControl>
           <FormLabel>{formLabel}</FormLabel>
           <InputGroup size="md">
-            <Input placeholder={placeholder} onChange={onChangeInput} />
+            <Input
+              placeholder={placeholder}
+              onChange={onChangeInput}
+              defaultValue={value}
+            />
           </InputGroup>
         </FormControl>
       )}
