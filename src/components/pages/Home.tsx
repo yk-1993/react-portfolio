@@ -64,10 +64,6 @@ import { UseRegister } from "../../hooks/useRegister";
 export const Home: VFC = memo(() => {
   const userState = useRecoilValue(authState);
   const history = useHistory();
-  const onClickInfo = () => {
-    console.log(`Redux:`);
-    console.log(store.getState());
-  };
   const redirect = () => {
     history.push("/");
   };
@@ -317,7 +313,7 @@ export const Home: VFC = memo(() => {
                       </UserInfoBadge>
                       <UserInfoBadge
                         userInfo={
-                          userInfo.address.postalcode
+                          userInfo.address.postalcode !== undefined
                             ? userInfo.address.postalcode
                             : "-"
                         }
