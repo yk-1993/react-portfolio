@@ -198,7 +198,7 @@ export const ContentsBox: VFC = () => {
         >
           React
           <SmallCloseIcon />
-          Typesctipt
+          Typescript
         </CenterTextSubTitle>
         <CenterTextContents
           as={motion.div}

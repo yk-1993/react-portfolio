@@ -108,7 +108,7 @@ export const Login: VFC = memo(() => {
     <Flex align="center" justify="center" minHeight="70vh">
       <DelayMotionPopup>
         <Heading as="h1" size="md" textAlign="center">
-          ログイン画面
+          ログイン
         </Heading>
         <Divider my={4} />
         <Stack spacing={3} py={4} px={{ base: 0, sm: 10 }}>
