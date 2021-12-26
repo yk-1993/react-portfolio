@@ -1,4 +1,4 @@
-import { Box, Flex, Heading } from "@chakra-ui/layout";
+import { Flex, Heading } from "@chakra-ui/layout";
 import { memo, VFC } from "react";
 
 export const Footer: VFC = memo(() => {

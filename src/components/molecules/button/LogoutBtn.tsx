@@ -20,6 +20,21 @@ export const LogoutBtn: VFC<Props> = memo((props) => {
 
   const logout = () => {
     showMessage({ title: "ログアウトしました", status: "info" });
+
+    // ログアウト日を記録
+    // 現在日時を取得・フォーマット後にローカルストレージに保存
+    var date = new Date();
+    const formatDate = (date) => {
+      let formatted_date =
+        date.getFullYear() +
+        "年" +
+        (date.getMonth() + 1) +
+        "月" +
+        date.getDate() +
+        "日";
+      return formatted_date;
+    };
+    localStorage.setItem("USER_LASTLOGIN", formatDate(date).toString());
     // Firebase側の認証からサインアウト
     auth.signOut();
     // フロント側で保持しているユーザ情報を初期化

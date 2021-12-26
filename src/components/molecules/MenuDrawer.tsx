@@ -4,7 +4,6 @@ import {
   DrawerContent,
   DrawerOverlay,
   Button,
-  Flex,
 } from "@chakra-ui/react";
 import { memo, VFC } from "react";
 import { LogoutBtn } from "./button/LogoutBtn";

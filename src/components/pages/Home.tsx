@@ -14,7 +14,6 @@ import { ChangeEvent, memo, useEffect, useState, VFC } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { authState } from "../../providers/LoginUserProvider";
 import { useHistory } from "react-router";
-import store from "../../index";
 import firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "../../store/store";
@@ -25,7 +24,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
@@ -130,8 +128,8 @@ export const Home: VFC = memo(() => {
   // フロント側画面間連携情報ユーザー用、一時保存用のグローバルステートを定義
   const [firstName, setFisrtName] = useRecoilState(UserInfoFirstName);
   const [lastName, setLastName] = useRecoilState(UserInfoLastName);
-  const [phone, setPhone] = useRecoilState(UserInfoPhone);
-  const [birthDate, setBirthDate] = useRecoilState(UserInfoBirthDate);
+  const phone = useRecoilValue(UserInfoPhone);
+  const birthDate = useRecoilValue(UserInfoBirthDate);
   const [tmpPrefecture, setTmpPrefecture] = useRecoilState(UserInfoPrefecture);
   const [tmpPostalcode, setTmpPostalcode] = useRecoilState(UserInfoPostalcode);
   const [tmpAddress1, setTmpAddress1] = useRecoilState(UserInfoAddress1);
@@ -141,16 +139,11 @@ export const Home: VFC = memo(() => {
   // モーダル用のディスクロージャを定義
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // ローカルにユーザー情報を登録
-  const { setRegisterUser } = UseRegister();
   // メッセージトースト
   const { showMessage } = useMessage();
 
   // 郵便番号検索API
   const { getAddress } = usePostalCodeGetAddress();
-
-  // メールアドレス認証用グローバルステート
-  const [emailIns] = useRecoilState(UserInfoEmail);
 
   // 郵便番号検索後、フォームにセットするためのステート定義
   const prefecture = useRecoilValue(UserInfoPrefecture);
@@ -173,9 +166,8 @@ export const Home: VFC = memo(() => {
     errMessagePost,
     errMessageAddress,
   } = UseValidation();
-  const setUser = useSetRecoilState(UserInfoProvider);
   // Firebase 認証エラーメッセージ用 useState
-  const [errMessage, setErrMessage] = useState<string>("");
+  const errMessage = useState<string>("");
   // 入力された郵便番号をuseStateにセット
   const onChangePostcode = (e: ChangeEvent<HTMLInputElement>) => {
     setPostcode(e.target.value);

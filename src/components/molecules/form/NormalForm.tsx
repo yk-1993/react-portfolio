@@ -1,7 +1,6 @@
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup } from "@chakra-ui/input";
 import { memo, VFC } from "react";
-import { StringLiteralLike } from "typescript";
 import { UseSetInput } from "../../../hooks/useSetInput";
 
 type Props = {
