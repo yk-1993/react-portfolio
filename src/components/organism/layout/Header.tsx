@@ -29,7 +29,7 @@ export const Header: VFC = memo(() => {
   const onClickSignUp = useCallback(() => history.push("/signup"), [history]);
   const onClickMypage = useCallback(() => history.push("/home"), [history]);
 
-  // 最終ログイン日時
+  // 最終ログイン日
   const [lastDate, setLastDate] = useState<string | null>(null);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export const Header: VFC = memo(() => {
             </Box>
             <Divider />
             <Box>
-              {userState?.uid && lastDate && `最終ログイン日時：${lastDate}`}
+              {userState?.uid && lastDate && `最終ログイン日：${lastDate}`}
             </Box>
           </Stack>
         </Flex>
