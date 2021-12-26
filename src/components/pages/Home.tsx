@@ -106,6 +106,7 @@ export const Home: VFC = memo(() => {
         }
       });
     });
+    window.scrollTo(0, 0);
   }, [userState?.uid, dispatch]);
   const redirect = () => {
     history.push("/login");
