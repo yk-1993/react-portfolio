@@ -1,6 +1,6 @@
 import { Frame, useAnimation } from "framer";
 import reactIcon from "./images/react2.png";
-import ionicIcon from "./images/recoil.png";
+import ionicIcon from "./images/redux.png";
 import firebaseIcon from "./images/firebase.png";
 import typescriptIcon from "./images/typescript.svg";
 import chakraIcon from "./images/chakra.webp";
@@ -106,12 +106,12 @@ export const ParallaxTest = () => {
           </TopPageMotion>
           <TopPageMotion>
             <Frame
-              scale={0.4}
+              scale={notSmall[0] ? 0.2 : 0.1}
               center="x"
               top="150px"
               left="20%"
-              width="377px"
-              height="134px"
+              width="1337px"
+              height="356px"
               background={null}
               animate={ionicAnim}
               image={ionicIcon}
