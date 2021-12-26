@@ -7,11 +7,16 @@ import { auth } from "../../../firebase";
 import { useMessage } from "../../../hooks/useMessage";
 import { authState } from "../../../providers/LoginUserProvider";
 
-export const LogoutBtn: VFC = memo(() => {
+type Props = {
+  onClose?: () => void;
+};
+export const LogoutBtn: VFC<Props> = memo((props) => {
   const history = useHistory();
   const { showMessage } = useMessage();
   const setUserState = useSetRecoilState(authState);
   const dispatch = useDispatch();
+
+  const { onClose } = props;
 
   const logout = () => {
     showMessage({ title: "ログアウトしました", status: "info" });
@@ -33,7 +38,10 @@ export const LogoutBtn: VFC = memo(() => {
   return (
     <Button
       backgroundColor="#fff"
-      onClick={logout}
+      onClick={() => {
+        logout();
+        onClose && onClose();
+      }}
       fontSize="sm"
       borderRadius="0"
       _hover={{

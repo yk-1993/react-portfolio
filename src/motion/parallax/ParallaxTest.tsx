@@ -121,7 +121,7 @@ export const ParallaxTest = () => {
             <Frame
               scale={notSmall[0] ? 0.3 : 0.15}
               center="x"
-              top={330}
+              top={450}
               left={notSmall[0] ? "20%" : "30%"}
               width="1400px"
               height="361px"

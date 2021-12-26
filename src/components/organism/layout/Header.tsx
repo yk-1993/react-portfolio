@@ -72,11 +72,11 @@ export const Header: VFC = memo(() => {
             position="absolute"
             right={{ base: "2vh", md: "50" }}
             top={{ base: "7vh", md: "70" }}
-            fontSize={{ base: "9", md: "13" }}
+            fontSize={{ base: "11", md: "13" }}
           >
             <Box>
               {userState?.uid &&
-                userChangeInfo &&
+                userChangeInfo.firstName &&
                 `${userChangeInfo.firstName} ${userChangeInfo.lastName} 様`}
             </Box>
             <Divider />
@@ -129,6 +129,7 @@ export const Header: VFC = memo(() => {
           onClickUserManagement={onClickUserManagement}
           onClickSetting={onClickSetting}
           onClickSignUp={onClickSignUp}
+          onClickMypage={onClickMypage}
         />
       </Flex>
     </>

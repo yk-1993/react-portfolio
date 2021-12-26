@@ -270,13 +270,13 @@ export const Home: VFC = memo(() => {
             templateRows={{ base: "repeat(3,1fr)", md: "repeat(2,1fr)" }}
             templateColumns={{ base: "repeat(4,1fr)", md: "repeat(4,1fr)" }}
             gap={4}
-            p={10}
+            p={{ base: 2, md: 10, sm: 2 }}
             bgColor="gray.200"
           >
             <GridItem
               rowSpan={2}
               colSpan={{ base: 4, md: 3 }}
-              p={10}
+              p={{ base: 5, md: 10, sm: 10 }}
               bgColor="#fff"
             >
               <Text mb={5} fontWeight="bold">
@@ -581,7 +581,7 @@ export const Home: VFC = memo(() => {
                 <Button
                   onClick={onRegister}
                   disabled={false}
-                  backgroundColor={{ md: "teal.400", sm: "gray.100" }}
+                  backgroundColor={"teal.400"}
                   color="white"
                   _hober={{ opacity: 0.8 }}
                 >

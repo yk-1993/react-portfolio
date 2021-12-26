@@ -134,17 +134,17 @@ export const ContentsBox: VFC = () => {
   const scale_C1 = useTransform(
     scrollYProgress,
     [0.1, 0.12, 0.2, 0.45, 0.55, 0.65, 0.75],
-    [5, 4, 9, 40, 70, 90, 150]
+    [1, 0.8, 1.6, 8, 14, 16, 30]
   );
   const scale_C2 = useTransform(
     scrollYProgress,
     [0.1, 0.12, 0.2, 0.45, 0.55, 0.65, 0.75],
-    [4, 3, 8, 39, 69, 90, 150]
+    [0.8, 0.6, 1.6, 8, 13.9, 15.9, 30]
   );
   const scale_C3 = useTransform(
     scrollYProgress,
     [0.1, 0.12, 0.2, 0.45, 0.55, 0.65, 0.75],
-    [4, 3, 8, 30, 30, 30, 30]
+    [0.8, 0.6, 1.6, 6, 6, 6, 6]
   );
 
   return (
@@ -686,18 +686,18 @@ const FIBox = styled(motion.div)`
 `;
 const SCircle = styled(motion.div)`
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 300px;
+  height: 300px;
   display: block;
   border-radius: 100%;
-  top: 210px;
+  top: 110px;
   left: 0;
   right: 0;
   z-index: 0;
   margin: auto;
   @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
+    width: 200px;
+    height: 200px;
   }
 `;
 const MotionDecoration = styled(motion.div)`

@@ -1,16 +1,24 @@
 import { Button } from "@chakra-ui/button";
 import { memo, VFC } from "react";
 import { useHistory } from "react-router";
-export const LoginBtn: VFC = memo(() => {
+type Props = {
+  onClose?: () => void;
+};
+export const LoginBtn: VFC<Props> = memo((props) => {
   const history = useHistory();
   const login = () => {
     // ログイン画面に遷移
     history.push("/login");
   };
+
+  const { onClose } = props;
   return (
     <Button
       backgroundColor="#fff"
-      onClick={login}
+      onClick={() => {
+        login();
+        onClose && onClose();
+      }}
       fontSize="sm"
       w="100%"
       borderRadius="0"

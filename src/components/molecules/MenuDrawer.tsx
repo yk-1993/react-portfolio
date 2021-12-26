@@ -19,10 +19,11 @@ type Props = {
   onClickUserManagement: () => void;
   onClickSetting: () => void;
   onClickSignUp: () => void;
+  onClickMypage: () => void;
 };
 
 export const MenuDrawer: VFC<Props> = memo((props) => {
-  const { onClose, isOpen, onClickHome, onClickSignUp } = props;
+  const { onClose, isOpen, onClickHome, onClickSignUp, onClickMypage } = props;
   const userState = useRecoilValue(authState);
   return (
     <Drawer placement="left" size="xs" onClose={onClose} isOpen={isOpen}>
@@ -37,7 +38,10 @@ export const MenuDrawer: VFC<Props> = memo((props) => {
           >
             <Button
               w={"100%"}
-              onClick={onClickHome}
+              onClick={() => {
+                onClickHome();
+                onClose();
+              }}
               borderRadius={0}
               backgroundColor="#fff"
               _hover={{
@@ -47,18 +51,42 @@ export const MenuDrawer: VFC<Props> = memo((props) => {
               TOP
             </Button>
             {/** ログイン状態によってボタンの出し分け制御 */}
-            {userState ? <LogoutBtn /> : <LoginBtn />}
-            <Button
-              w={"100%"}
-              backgroundColor="#fff"
-              onClick={onClickSignUp}
-              borderRadius={0}
-              _hover={{
-                borderBottom: "1px solid #222",
-              }}
-            >
-              新規登録
-            </Button>
+            {userState ? (
+              <LogoutBtn onClose={onClose} />
+            ) : (
+              <LoginBtn onClose={onClose} />
+            )}
+            {userState ? (
+              <Button
+                w={"100%"}
+                backgroundColor="#fff"
+                onClick={() => {
+                  onClickMypage();
+                  onClose();
+                }}
+                borderRadius={0}
+                _hover={{
+                  borderBottom: "1px solid #222",
+                }}
+              >
+                Home
+              </Button>
+            ) : (
+              <Button
+                w={"100%"}
+                backgroundColor="#fff"
+                onClick={() => {
+                  onClickSignUp();
+                  onClose();
+                }}
+                borderRadius={0}
+                _hover={{
+                  borderBottom: "1px solid #222",
+                }}
+              >
+                新規登録
+              </Button>
+            )}
           </DrawerBody>
         </DrawerContent>
       </DrawerOverlay>

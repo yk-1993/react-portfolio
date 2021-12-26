@@ -111,7 +111,7 @@ export const Login: VFC = memo(() => {
           ログイン画面
         </Heading>
         <Divider my={4} />
-        <Stack spacing={3} py={4} px={10}>
+        <Stack spacing={3} py={4} px={{ base: 0, sm: 10 }}>
           <DelayMotionChild>
             <InputGroup size="md">
               <InputLeftElement

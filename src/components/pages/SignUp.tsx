@@ -175,7 +175,7 @@ export const SignUp: VFC = memo(() => {
 
   return (
     <>
-      <Flex align="center" justify="center" padding="10">
+      <Flex align="center" justify="center" padding={{ md: "10", sm: "0" }}>
         <DelayMotion>
           <Heading as="h1" size="md" textAlign="center">
             新規ユーザー登録
@@ -183,7 +183,7 @@ export const SignUp: VFC = memo(() => {
           <Divider my={4} />
           {/**氏名入力フォーム */}
 
-          <Stack spacing={3} py={4} px={10}>
+          <Stack spacing={3} py={4} px={{ md: "10", sm: "0" }}>
             <DelayMotionChild>
               <Flex align="center" justifyContent="space-between">
                 <Box w="47.5%">
@@ -413,7 +413,7 @@ export const SignUp: VFC = memo(() => {
             <Button
               onClick={onRegister}
               disabled={false}
-              backgroundColor={{ md: "teal.400", sm: "gray.100" }}
+              backgroundColor={"teal.400"}
               color="white"
               _hober={{ opacity: 0.8 }}
             >
