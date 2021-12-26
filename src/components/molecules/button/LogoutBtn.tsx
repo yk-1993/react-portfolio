@@ -14,6 +14,7 @@ export const LogoutBtn: VFC = memo(() => {
   const dispatch = useDispatch();
 
   const logout = () => {
+    showMessage({ title: "ログアウトしました", status: "info" });
     // Firebase側の認証からサインアウト
     auth.signOut();
     // フロント側で保持しているユーザ情報を初期化
@@ -25,7 +26,9 @@ export const LogoutBtn: VFC = memo(() => {
     });
     // ログアウト後はログイン画面に遷移
     history.push("/login");
-    showMessage({ title: "ログアウトしました", status: "info" });
+    setTimeout(() => {
+      history.go(0);
+    }, 0);
   };
   return (
     <Button

@@ -1,9 +1,9 @@
 export enum KEYS {
-  USER_SESSION = "USER_SESSION",
+  USER_LASTLOGIN = "USER_LASTLOGIN",
 }
 
 export const getItem = (key: KEYS) => {
-  const value = sessionStorage.getItem(KEYS.USER_SESSION);
+  const value = localStorage.getItem(KEYS.USER_LASTLOGIN);
   if (value !== null) {
     return value;
   }
@@ -11,9 +11,9 @@ export const getItem = (key: KEYS) => {
 };
 
 export const removeItem = (key: KEYS) => {
-  sessionStorage.removeItem(key);
+  localStorage.removeItem(key);
 };
 
 export const setItem = (key: KEYS, value: any) => {
-  sessionStorage.setItem(key, value);
+  localStorage.setItem(key, value);
 };

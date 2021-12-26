@@ -62,10 +62,53 @@ import { User } from "../../types/user";
 import { UseRegister } from "../../hooks/useRegister";
 
 export const Home: VFC = memo(() => {
+  // Reduxからステートを取得
+  const userInfo = useSelector((state: UserState) => state);
+  const userChangeInfo = useSelector((state: User) => state);
   const userState = useRecoilValue(authState);
   const history = useHistory();
+  // Redux dispatchを定義
+  const dispatch = useDispatch();
+  // 初期処理
+  useEffect(() => {
+    const db = firebase.firestore();
+    // collection 'recipes' を参照
+    const myColRef = db.collection("users");
+
+    // 取得したdataの格納用
+    let dataValue;
+    myColRef.onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        dataValue = doc.data();
+        if (dataValue.uid === userState?.uid) {
+          console.log(dataValue);
+          // ReduxにFirebaseから取得した情報を格納
+          dispatch({
+            type: "REGISTER_USER",
+            user: {
+              uid: dataValue.uid,
+              firstName: dataValue.firstName,
+              lastName: dataValue.lastName,
+              email: dataValue.email,
+              phone: dataValue.phone,
+              birthDate: dataValue.birthDate,
+              address: {
+                postalcode: dataValue.address?.postalcode,
+                prefecture: dataValue.address?.prefecture,
+                address1: dataValue.address?.address1,
+                address2: dataValue.address?.address2,
+                address3: dataValue.address?.address3,
+              },
+            },
+          });
+        } else {
+          return;
+        }
+      });
+    });
+  }, [userState?.uid, dispatch]);
   const redirect = () => {
-    history.push("/");
+    history.push("/login");
   };
 
   // Modal起動
@@ -94,12 +137,6 @@ export const Home: VFC = memo(() => {
   const [tmpAddress2, setTmpAddress2] = useRecoilState(UserInfoAddress2);
   const [tmpAddress3, setTmpAddress3] = useRecoilState(UserInfoAddress3);
 
-  // Redux dispatchを定義
-  const dispatch = useDispatch();
-
-  // Reduxからステートを取得
-  const userInfo = useSelector((state: UserState) => state);
-  const userChangeInfo = useSelector((state: User) => state);
   // モーダル用のディスクロージャを定義
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -143,12 +180,6 @@ export const Home: VFC = memo(() => {
     setPostcode(e.target.value);
     setPostalcodeGlobal(e.target.value);
   };
-  useEffect(() => {
-    (async () => {
-      setUser(null);
-    })();
-  }, []);
-
   //登録ボタン押下
   const onRegister = async () => {
     //
@@ -229,47 +260,9 @@ export const Home: VFC = memo(() => {
     })();
   }, [isOpen]);
 
-  useEffect(() => {
-    const db = firebase.firestore();
-    // collection 'recipes' を参照
-    const myColRef = db.collection("users");
-
-    // 取得したdataの格納用
-    let dataValue;
-    myColRef.onSnapshot((snapshot) => {
-      snapshot.forEach((doc) => {
-        dataValue = doc.data();
-        if (dataValue.uid === userState?.uid) {
-          console.log(dataValue);
-          // ReduxにFirebaseから取得した情報を格納
-          dispatch({
-            type: "REGISTER_USER",
-            user: {
-              uid: dataValue.uid,
-              firstName: dataValue.firstName,
-              lastName: dataValue.lastName,
-              email: dataValue.email,
-              phone: dataValue.phone,
-              birthDate: dataValue.birthDate,
-              address: {
-                postalcode: dataValue.address?.postalcode,
-                prefecture: dataValue.address?.prefecture,
-                address1: dataValue.address?.address1,
-                address2: dataValue.address?.address2,
-                address3: dataValue.address?.address3,
-              },
-            },
-          });
-        } else {
-          return;
-        }
-      });
-    });
-  }, [userState?.uid, dispatch]);
-
   return (
     <>
-      {userState ? (
+      {userState || userInfo ? (
         <Box height="100%" minHeight="75vh">
           <Grid
             h="100%"
@@ -313,7 +306,7 @@ export const Home: VFC = memo(() => {
                       </UserInfoBadge>
                       <UserInfoBadge
                         userInfo={
-                          userInfo.address.postalcode !== undefined
+                          userInfo.address.postalcode
                             ? userInfo.address.postalcode
                             : "-"
                         }
@@ -397,7 +390,7 @@ export const Home: VFC = memo(() => {
                         value={
                           userChangeInfo.firstName
                             ? userChangeInfo.firstName
-                            : undefined
+                            : "-"
                         }
                         inputType="firstName"
                       />
@@ -410,7 +403,7 @@ export const Home: VFC = memo(() => {
                         value={
                           userChangeInfo.lastName
                             ? userChangeInfo.lastName
-                            : undefined
+                            : "-"
                         }
                         inputType="lastName"
                       />
@@ -450,9 +443,7 @@ export const Home: VFC = memo(() => {
                     placeholder="example@gmail.com"
                     leftIcon={<EmailIcon color="gray.300" />}
                     inputType="email"
-                    value={
-                      userChangeInfo.email ? userChangeInfo.email : undefined
-                    }
+                    value={userChangeInfo.email ? userChangeInfo.email : "-"}
                     disabled={true}
                   />
                 </DelayMotionChild>
@@ -463,9 +454,7 @@ export const Home: VFC = memo(() => {
                     isRequiredFlag={false}
                     placeholder="例：09012345678"
                     inputType="phone"
-                    value={
-                      userChangeInfo.phone ? userChangeInfo.phone : undefined
-                    }
+                    value={userChangeInfo.phone ? userChangeInfo.phone : "-"}
                     leftIcon={<PhoneIcon color="gray.300" />}
                   />
 
@@ -497,7 +486,7 @@ export const Home: VFC = memo(() => {
                           defaultValue={
                             userChangeInfo.address.postalcode
                               ? userChangeInfo.address.postalcode
-                              : undefined
+                              : "-"
                           }
                         />
                         <InputRightElement width="4rem">

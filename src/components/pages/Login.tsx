@@ -67,8 +67,24 @@ export const Login: VFC = memo(() => {
         //Firebaseからの値 auth.userに値が入っていた場合、TOP画面に遷移
         if (auth.user) {
           setUserState(auth.user);
-          history.push("/home");
-          showMessage({ title: "ログインに成功しました", status: "success" });
+          if (authState) {
+            showMessage({ title: "ログインに成功しました", status: "success" });
+            history.push("/home");
+
+            // 現在日時を取得・フォーマット後にローカルストレージに保存
+            var date = new Date();
+            const formatDate = (date) => {
+              let formatted_date =
+                date.getFullYear() +
+                "年" +
+                (date.getMonth() + 1) +
+                "月" +
+                date.getDate() +
+                "日";
+              return formatted_date;
+            };
+            localStorage.setItem("USER_LASTLOGIN", formatDate(date).toString());
+          }
         }
       } catch (error: any) {
         if (error.code === "auth/invalid-email") {

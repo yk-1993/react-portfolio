@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Link } from "@chakra-ui/layout";
-import { useDisclosure } from "@chakra-ui/react";
-import { memo, useCallback, VFC } from "react";
+import { useDisclosure, Divider, Stack, Center } from "@chakra-ui/react";
+import { memo, useCallback, useEffect, useState, VFC } from "react";
 import { useHistory } from "react-router";
 import { useRecoilValue } from "recoil";
 import { authState } from "../../../providers/LoginUserProvider";
@@ -11,6 +11,7 @@ import { LoginBtn } from "../../molecules/button/LoginBtn";
 import { ScrollMotion } from "../../../motion/ScrollMotion";
 import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "../../../store/store";
+import { User } from "../../../types/user";
 export const Header: VFC = memo(() => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const history = useHistory();
@@ -27,6 +28,17 @@ export const Header: VFC = memo(() => {
 
   const onClickSignUp = useCallback(() => history.push("/signup"), [history]);
   const onClickMypage = useCallback(() => history.push("/home"), [history]);
+
+  // 最終ログイン日時
+  const [lastDate, setLastDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    const lastTime = localStorage.getItem("USER_LASTLOGIN");
+    setLastDate(lastTime);
+  }, []);
+
+  // Reduxからステートを取得
+  const userChangeInfo = useSelector((state: User) => state);
 
   return (
     <>
@@ -55,6 +67,23 @@ export const Header: VFC = memo(() => {
               TOP
             </Heading>
           </ScrollMotion>
+          <Stack
+            spacing={1}
+            position="absolute"
+            right={{ base: "2vh", md: "50" }}
+            top={{ base: "7vh", md: "70" }}
+            fontSize={{ base: "9", md: "13" }}
+          >
+            <Box>
+              {userState?.uid &&
+                userChangeInfo &&
+                `${userChangeInfo.firstName} ${userChangeInfo.lastName} 様`}
+            </Box>
+            <Divider />
+            <Box>
+              {userState?.uid && lastDate && `最終ログイン日時：${lastDate}`}
+            </Box>
+          </Stack>
         </Flex>
         <Flex
           align="center"
@@ -89,14 +118,10 @@ export const Header: VFC = memo(() => {
               </ScrollMotion>
             )}
           </Box>
-          {/* <Box pr={4}>
-            <Link onClick={onClickUserManagement}>ユーザー一覧</Link>
-          </Box>
-          <Box pr={4}>
-            <Link onClick={onClickSetting}>設定</Link>
-          </Box> */}
         </Flex>
-        <MenuIconButton onOpen={onOpen} />
+        <Box marginTop="-8vh">
+          <MenuIconButton onOpen={onOpen} />
+        </Box>
         <MenuDrawer
           onClose={onClose}
           isOpen={isOpen}
