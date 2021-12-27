@@ -31,7 +31,11 @@ export const LogoutBtn: VFC<Props> = memo((props) => {
         (date.getMonth() + 1) +
         "月" +
         date.getDate() +
-        "日";
+        "日　" +
+        date.getHours() +
+        "時" +
+        date.getMinutes() +
+        "分"
       return formatted_date;
     };
     localStorage.setItem("USER_LASTLOGIN", formatDate(date).toString());

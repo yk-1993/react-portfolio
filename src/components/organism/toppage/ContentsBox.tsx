@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { motion, useTransform, useViewportScroll } from "framer-motion";
-import { VFC } from "react";
+import { useCallback, VFC } from "react";
 import { ReactAnimate } from "../../../lottie/lottieComponent/ReactAnimate";
 import { Box, Flex } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/react";
 import { useMediaQuery } from "@chakra-ui/media-query";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { Frame, useAnimation } from "framer";
@@ -14,8 +15,17 @@ import firebaseImage from "../../../motion/parallax/images/firebase.png";
 import { FramerAnimate } from "../../../lottie/lottieComponent/FramerAnimate";
 import { PhoneAnimate } from "../../../lottie/lottieComponent/PhoneAnimate";
 import { FirebaseAnimate } from "../../../lottie/lottieComponent/FirebaseAnimate";
+import { useHistory } from "react-router";
+import { ArrowRightIcon } from "@chakra-ui/icons";
 
 export const ContentsBox: VFC = () => {
+  // useHistory定義
+  const history = useHistory();
+  // 新規登録
+  const onClickSignUp = useCallback(() => {
+    window.scrollTo(0, 0);
+    history.push("/signup");
+  }, [history]);
   // スクロールアニメーションに使用
   const { scrollYProgress } = useViewportScroll();
   // レスポンシブ対応
@@ -515,6 +525,19 @@ export const ContentsBox: VFC = () => {
           </motion.div>
         </Flex>
       </Box>
+      <Button
+        onClick={onClickSignUp}
+        m="auto"
+        display="block"
+        pl="70px"
+        pr="80px"
+        color="white"
+        border="1px solid #efefef"
+        bgColor="#FFCB2B"
+      >
+        <ArrowRightIcon fontSize="12" mt="-0.5" mr="1em" />
+        新規ユーザー登録
+      </Button>
     </SBox>
   );
 };
