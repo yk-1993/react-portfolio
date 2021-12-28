@@ -465,9 +465,11 @@ export const ContentsBox: VFC = () => {
           >
             <p>BACKENDはFirebaseで実装しています。</p>
             <p>
-              DBはFirestore Database、認証はFirebase Authenticationで実装し、
+              DBはFirestore Databaseを、認証機能はFirebase
+              Authenticationで実装し、
             </p>
-            <p>uidをDB側の情報と紐付けています。</p>
+            <p>uidをDB側と紐付けています。</p>
+            <p>また、Firebase Hostingでデプロイもシンプルに行えます。</p>
           </FIBox>
           <Box m="1em 0" position="relative">
             {isSmall[0] ? (
@@ -536,7 +538,7 @@ export const ContentsBox: VFC = () => {
         bgColor="#FFCB2B"
       >
         <ArrowRightIcon fontSize="12" mt="-0.5" mr="1em" />
-        新規ユーザー登録
+        新規ユーザー登録機能
       </Button>
     </SBox>
   );
